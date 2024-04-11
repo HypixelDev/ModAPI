@@ -42,13 +42,20 @@ public class PacketSerializer {
         return i;
     }
 
-    public void writeVarInt(int i) {
-        while ((i & -128) != 0) {
-            this.buf.writeByte(i & 127 | 128);
-            i >>>= 7;
+    public PacketSerializer writeVarInt(int value) {
+        if ((value & 0xFFFFFF80) == 0) {
+            buf.writeByte(value);
+        } else if ((value & 0xFFFFC000) == 0) {
+            buf.writeShort((value & 0x7F | 0x80) << 8 | (value >>> 7 & 0x7F));
+        } else if ((value & 0xFFE00000) == 0) {
+            buf.writeMedium((value & 0x7F | 0x80) << 16 | (value >>> 7 & 0x7F | 0x80) << 8 | (value >>> 14 & 0x7F));
+        } else if ((value & 0xF0000000) == 0) {
+            buf.writeInt((value & 0x7F | 0x80) << 24 | (value >>> 7 & 0x7F | 0x80) << 16 | (value >>> 14 & 0x7F | 0x80) << 8 | (value >>> 21 & 0x7F));
+        } else {
+            buf.writeInt((value & 0x7F | 0x80) << 24 | (value >>> 7 & 0x7F | 0x80) << 16 | (value >>> 14 & 0x7F | 0x80) << 8 | (value >>> 21 & 0x7F | 0x80));
+            buf.writeByte(value >>> 28);
         }
-
-        this.buf.writeByte(i);
+        return this;
     }
 
     public byte readByte() {
