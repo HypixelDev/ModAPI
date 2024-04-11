@@ -20,7 +20,7 @@ public enum HypixelPacketType {
     ;
     private static final String IDENTIFIER_PREFIX = "hypixel:";
     private static final Map<String, HypixelPacketType> BY_IDENTIFIER = Arrays.stream(values()).collect(HashMap::new, (map, type) -> map.put(type.getIdentifier(), type), HashMap::putAll);
-    private final Function<PacketSerializer, HypixelPacket> packetFactory;
+    private final PacketFactory<? extends ClientboundHypixelPacket> clientboundFactory;
 
     @Nullable
     public static HypixelPacketType getByIdentifier(String identifier) {
@@ -29,16 +29,16 @@ public enum HypixelPacketType {
 
     private final String identifier;
 
-    HypixelPacketType(Function<PacketSerializer, HypixelPacket> packetFactory) {
+    HypixelPacketType(PacketFactory<? extends ClientboundHypixelPacket> clientboundFactory) {
         this.identifier = IDENTIFIER_PREFIX + name().toLowerCase();
-        this.packetFactory = packetFactory;
+        this.clientboundFactory = clientboundFactory;
     }
 
     public String getIdentifier() {
         return identifier;
     }
 
-    public Function<PacketSerializer, HypixelPacket> getPacketFactory() {
-        return packetFactory;
+    public PacketFactory<? extends ClientboundHypixelPacket> getClientboundFactory() {
+        return clientboundFactory;
     }
 }

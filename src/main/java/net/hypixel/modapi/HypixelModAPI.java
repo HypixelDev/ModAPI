@@ -3,7 +3,7 @@ package net.hypixel.modapi;
 import net.hypixel.modapi.error.ErrorReason;
 import net.hypixel.modapi.error.ModAPIException;
 import net.hypixel.modapi.handler.ClientboundPacketHandler;
-import net.hypixel.modapi.packet.HypixelPacket;
+import net.hypixel.modapi.packet.ClientboundHypixelPacket;
 import net.hypixel.modapi.packet.HypixelPacketType;
 import net.hypixel.modapi.serializer.PacketSerializer;
 
@@ -42,7 +42,7 @@ public class HypixelModAPI {
             throw new ModAPIException(packetType, reason);
         }
 
-        HypixelPacket packet = packetType.getPacketFactory().apply(serializer);
+        ClientboundHypixelPacket packet = packetType.getClientboundFactory().create(serializer);
         for (ClientboundPacketHandler handler : packetHandlers) {
             handler.handle(packet);
         }
