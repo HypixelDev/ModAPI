@@ -6,17 +6,22 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public enum ErrorReason {
-    DISABLED(0),
-    INTERNAL_SERVER_ERROR(1),
-    RATE_LIMITED(2),
-    INVALID_PACKET_VERSION(3),
-    NO_LONGER_SUPPORTED(4),
+    UNKNOWN(0),
+    DISABLED(1),
+    INTERNAL_SERVER_ERROR(2),
+    RATE_LIMITED(3),
+    INVALID_PACKET_VERSION(4),
+    NO_LONGER_SUPPORTED(5),
     ;
 
     private static final Map<Byte, ErrorReason> BY_ID = Arrays.stream(values()).collect(Collectors.toMap(ErrorReason::getId, Function.identity()));
 
     public static ErrorReason getById(byte id) {
-        return BY_ID.get(id);
+        ErrorReason reason = BY_ID.get(id);
+        if (reason != null) {
+            return reason;
+        }
+        return UNKNOWN;
     }
 
     private final byte id;
