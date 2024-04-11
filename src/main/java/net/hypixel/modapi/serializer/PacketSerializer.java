@@ -8,7 +8,7 @@ import io.netty.util.CharsetUtil;
 import java.util.UUID;
 
 public class PacketSerializer {
-    private static final int MAX_BYTES_PER_CHAR_UTF8 = (int) CharsetUtil.encoder(CharsetUtil.UTF_8).maxBytesPerChar();
+    private static final int MAX_BYTES_PER_CHAR_UTF8 = (int) CharsetUtil.getEncoder(CharsetUtil.UTF_8).maxBytesPerChar();
     private static final int MAX_STRING_LENGTH = 32767;
 
     private final ByteBuf buf;
