@@ -6,7 +6,7 @@
 
     <groupId>net.hypixel</groupId>
     <artifactId>mod-api</artifactId>
-    <version>0.1.6</version>
+    <version>0.1.7</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -31,7 +31,7 @@
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
-            <version>4.0.56.Final</version>
+            <version>4.0.23.Final</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
