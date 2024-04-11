@@ -1,6 +1,5 @@
-package net.hypixel.modapi.exception;
+package net.hypixel.modapi.error;
 
-import net.hypixel.modapi.data.ErrorReason;
 import net.hypixel.modapi.packet.HypixelPacketType;
 
 public class ModAPIException extends RuntimeException {

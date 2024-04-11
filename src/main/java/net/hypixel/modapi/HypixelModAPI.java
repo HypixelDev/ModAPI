@@ -1,7 +1,7 @@
 package net.hypixel.modapi;
 
-import net.hypixel.modapi.data.ErrorReason;
-import net.hypixel.modapi.exception.ModAPIException;
+import net.hypixel.modapi.error.ErrorReason;
+import net.hypixel.modapi.error.ModAPIException;
 import net.hypixel.modapi.handler.ClientboundPacketHandler;
 import net.hypixel.modapi.packet.HypixelPacket;
 import net.hypixel.modapi.packet.HypixelPacketType;
