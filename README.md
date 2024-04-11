@@ -38,5 +38,7 @@ You can then include the dependency in your project.
 ```
 
 ```gradle
-implementation 'net.hypixel:mod-api:0.1.6'
+dependencies {
+    implementation 'net.hypixel:mod-api:0.1.6'
+}
 ```
