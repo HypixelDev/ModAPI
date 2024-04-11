@@ -1,5 +1,6 @@
 package net.hypixel.modapi;
 
+import net.hypixel.modapi.data.ModAPIError;
 import net.hypixel.modapi.handler.ClientboundPacketHandler;
 import net.hypixel.modapi.packet.HypixelPacket;
 import net.hypixel.modapi.packet.HypixelPacketType;
@@ -36,8 +37,8 @@ public class HypixelModAPI {
 
         // All responses contain a boolean of if the response is a success, if not then a string is included with the error message
         if (!serializer.readBoolean()) {
-            String errorMessage = serializer.readString();
-            throw new RuntimeException("Received error response for packet " + packetType + ": " + errorMessage);
+            ModAPIError error = ModAPIError.getById(serializer.readByte());
+            throw new RuntimeException("Received error response for packet " + packetType + ": " + error);
         }
 
         HypixelPacket packet = packetType.getPacketFactory().apply(serializer);
