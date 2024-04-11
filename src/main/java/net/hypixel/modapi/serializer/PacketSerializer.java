@@ -51,15 +51,6 @@ public class PacketSerializer {
         this.buf.writeByte(i);
     }
 
-    public byte readByte() {
-        return this.buf.readByte();
-    }
-
-    public PacketSerializer writeByte(int value) {
-        this.buf.writeByte(value);
-        return this;
-    }
-
     public String readString() {
         return this.readString(MAX_STRING_LENGTH);
     }

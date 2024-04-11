@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 public class ClientboundLocationPacket extends VersionedPacket {
-    private static final byte CURRENT_VERSION = 1;
+    private static final int CURRENT_VERSION = 1;
 
     private final Environment environment;
     private final String proxyName;
@@ -37,7 +37,7 @@ public class ClientboundLocationPacket extends VersionedPacket {
 
     public ClientboundLocationPacket(PacketSerializer serializer) {
         super(serializer);
-        this.environment = Environment.getById((byte) serializer.readVarInt()).orElseThrow(() -> new IllegalArgumentException("Invalid environment ID"));
+        this.environment = Environment.getById(serializer.readVarInt()).orElseThrow(() -> new IllegalArgumentException("Invalid environment ID"));
         this.proxyName = serializer.readString();
         this.serverName = serializer.readString();
         this.serverType = serializer.readBoolean() ? ServerType.valueOf(serializer.readString()).orElse(null) : null;

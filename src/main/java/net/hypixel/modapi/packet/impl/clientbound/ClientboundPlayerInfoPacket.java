@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 public class ClientboundPlayerInfoPacket extends VersionedPacket {
-    private static final byte CURRENT_VERSION = 1;
+    private static final int CURRENT_VERSION = 1;
 
     private final PlayerRank playerRank;
     private final PackageRank packageRank;
@@ -29,9 +29,9 @@ public class ClientboundPlayerInfoPacket extends VersionedPacket {
 
     public ClientboundPlayerInfoPacket(PacketSerializer serializer) {
         super(serializer);
-        this.playerRank = PlayerRank.getById(serializer.readByte()).orElseThrow(() -> new IllegalArgumentException("Invalid player rank ID"));
-        this.packageRank = PackageRank.getById(serializer.readByte()).orElseThrow(() -> new IllegalArgumentException("Invalid package rank ID"));
-        this.monthlyPackageRank = MonthlyPackageRank.getById(serializer.readByte()).orElseThrow(() -> new IllegalArgumentException("Invalid monthly package rank ID"));
+        this.playerRank = PlayerRank.getById(serializer.readVarInt()).orElseThrow(() -> new IllegalArgumentException("Invalid player rank ID"));
+        this.packageRank = PackageRank.getById(serializer.readVarInt()).orElseThrow(() -> new IllegalArgumentException("Invalid package rank ID"));
+        this.monthlyPackageRank = MonthlyPackageRank.getById(serializer.readVarInt()).orElseThrow(() -> new IllegalArgumentException("Invalid monthly package rank ID"));
         this.prefix = serializer.readBoolean() ? serializer.readString() : null;
     }
 
@@ -43,9 +43,9 @@ public class ClientboundPlayerInfoPacket extends VersionedPacket {
     @Override
     public void write(PacketSerializer serializer) {
         super.write(serializer);
-        serializer.writeByte(playerRank.getId());
-        serializer.writeByte(packageRank.getId());
-        serializer.writeByte(monthlyPackageRank.getId());
+        serializer.writeVarInt(playerRank.getId());
+        serializer.writeVarInt(packageRank.getId());
+        serializer.writeVarInt(monthlyPackageRank.getId());
         serializer.writeBoolean(prefix != null);
         if (prefix != null) {
             serializer.writeString(prefix);
