@@ -1,6 +1,6 @@
 package net.hypixel.modapi.packet.impl.clientbound;
 
-import net.hypixel.modapi.data.Environment;
+import net.hypixel.data.region.Environment;
 import net.hypixel.modapi.packet.HypixelPacketType;
 import net.hypixel.modapi.packet.impl.VersionedPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
@@ -36,7 +36,7 @@ public class ClientboundLocationPacket extends VersionedPacket {
 
     public ClientboundLocationPacket(PacketSerializer serializer) {
         super(serializer);
-        this.environment = Environment.VALUES[serializer.readVarInt()];
+        this.environment = Environment.getById((byte) serializer.readVarInt()).orElseThrow(() -> new IllegalArgumentException("Invalid environment ID"));
         this.proxyName = serializer.readString();
         this.serverName = serializer.readString();
         this.serverType = serializer.readBoolean() ? serializer.readString() : null;
