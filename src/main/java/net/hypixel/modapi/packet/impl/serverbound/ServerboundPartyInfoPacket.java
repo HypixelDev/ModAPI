@@ -17,6 +17,6 @@ public class ServerboundPartyInfoPacket extends VersionedPacket {
 
     @Override
     public HypixelPacketType getType() {
-        return HypixelPacketType.LOCATION;
+        return HypixelPacketType.PARTY_INFO;
     }
 }
