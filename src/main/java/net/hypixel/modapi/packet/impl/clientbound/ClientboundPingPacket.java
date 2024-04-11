@@ -5,7 +5,7 @@ import net.hypixel.modapi.packet.impl.VersionedPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
 
 public class ClientboundPingPacket extends VersionedPacket {
-    private static final byte CURRENT_VERSION = 1;
+    private static final int CURRENT_VERSION = 1;
 
     private final String response;
 

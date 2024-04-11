@@ -1,6 +1,7 @@
 package net.hypixel.modapi.packet.impl.clientbound;
 
-import net.hypixel.modapi.data.Environment;
+import net.hypixel.data.region.Environment;
+import net.hypixel.data.type.ServerType;
 import net.hypixel.modapi.packet.HypixelPacketType;
 import net.hypixel.modapi.packet.impl.VersionedPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
@@ -9,13 +10,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 public class ClientboundLocationPacket extends VersionedPacket {
-    private static final byte CURRENT_VERSION = 1;
+    private static final int CURRENT_VERSION = 1;
 
     private final Environment environment;
     private final String proxyName;
     private final String serverName;
     @Nullable
-    private final String serverType;
+    private final ServerType serverType;
     @Nullable
     private final String lobbyName;
     @Nullable
@@ -23,7 +24,7 @@ public class ClientboundLocationPacket extends VersionedPacket {
     @Nullable
     private final String map;
 
-    public ClientboundLocationPacket(Environment environment, String proxyName, String serverName, @Nullable String serverType, @Nullable String lobbyName, @Nullable String mode, @Nullable String map) {
+    public ClientboundLocationPacket(Environment environment, String proxyName, String serverName, @Nullable ServerType serverType, @Nullable String lobbyName, @Nullable String mode, @Nullable String map) {
         super(CURRENT_VERSION);
         this.environment = environment;
         this.proxyName = proxyName;
@@ -36,10 +37,10 @@ public class ClientboundLocationPacket extends VersionedPacket {
 
     public ClientboundLocationPacket(PacketSerializer serializer) {
         super(serializer);
-        this.environment = Environment.VALUES[serializer.readVarInt()];
+        this.environment = Environment.getById(serializer.readVarInt()).orElseThrow(() -> new IllegalArgumentException("Invalid environment ID"));
         this.proxyName = serializer.readString();
         this.serverName = serializer.readString();
-        this.serverType = serializer.readBoolean() ? serializer.readString() : null;
+        this.serverType = serializer.readBoolean() ? ServerType.valueOf(serializer.readString()).orElse(null) : null;
         this.lobbyName = serializer.readBoolean() ? serializer.readString() : null;
         this.mode = serializer.readBoolean() ? serializer.readString() : null;
         this.map = serializer.readBoolean() ? serializer.readString() : null;
@@ -59,7 +60,7 @@ public class ClientboundLocationPacket extends VersionedPacket {
 
         serializer.writeBoolean(serverType != null);
         if (serverType != null) {
-            serializer.writeString(serverType);
+            serializer.writeString(serverType.name());
         }
 
         serializer.writeBoolean(lobbyName != null);
@@ -90,7 +91,7 @@ public class ClientboundLocationPacket extends VersionedPacket {
         return serverName;
     }
 
-    public Optional<String> getServerType() {
+    public Optional<ServerType> getServerType() {
         return Optional.ofNullable(serverType);
     }
 

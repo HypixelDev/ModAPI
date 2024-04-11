@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class ClientboundPartyInfoPacket extends VersionedPacket {
-    private static final byte CURRENT_VERSION = 1;
+    private static final int CURRENT_VERSION = 1;
 
     private final boolean inParty;
     private final UUID leader;

@@ -5,7 +5,7 @@ import net.hypixel.modapi.packet.impl.VersionedPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
 
 public class ServerboundPartyInfoPacket extends VersionedPacket {
-    private static final byte CURRENT_VERSION = 1;
+    private static final int CURRENT_VERSION = 1;
 
     public ServerboundPartyInfoPacket() {
         super(CURRENT_VERSION);
