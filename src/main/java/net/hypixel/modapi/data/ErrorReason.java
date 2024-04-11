@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public enum ModAPIError {
+public enum ErrorReason {
     DISABLED(0),
     INTERNAL_SERVER_ERROR(1),
     RATE_LIMITED(2),
@@ -13,15 +13,15 @@ public enum ModAPIError {
     NO_LONGER_SUPPORTED(4),
     ;
 
-    private static final Map<Byte, ModAPIError> BY_ID = Arrays.stream(values()).collect(Collectors.toMap(ModAPIError::getId, Function.identity()));
+    private static final Map<Byte, ErrorReason> BY_ID = Arrays.stream(values()).collect(Collectors.toMap(ErrorReason::getId, Function.identity()));
 
-    public static ModAPIError getById(byte id) {
+    public static ErrorReason getById(byte id) {
         return BY_ID.get(id);
     }
 
     private final byte id;
 
-    ModAPIError(int id) {
+    ErrorReason(int id) {
         this.id = (byte) id;
     }
 
