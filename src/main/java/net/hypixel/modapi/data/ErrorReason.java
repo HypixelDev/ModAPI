@@ -14,9 +14,9 @@ public enum ErrorReason {
     NO_LONGER_SUPPORTED(5),
     ;
 
-    private static final Map<Byte, ErrorReason> BY_ID = Arrays.stream(values()).collect(Collectors.toMap(ErrorReason::getId, Function.identity()));
+    private static final Map<Integer, ErrorReason> BY_ID = Arrays.stream(values()).collect(Collectors.toMap(ErrorReason::getId, Function.identity()));
 
-    public static ErrorReason getById(byte id) {
+    public static ErrorReason getById(int id) {
         ErrorReason reason = BY_ID.get(id);
         if (reason != null) {
             return reason;
@@ -24,13 +24,13 @@ public enum ErrorReason {
         return UNKNOWN;
     }
 
-    private final byte id;
+    private final int id;
 
     ErrorReason(int id) {
-        this.id = (byte) id;
+        this.id = id;
     }
 
-    public byte getId() {
+    public int getId() {
         return id;
     }
 }

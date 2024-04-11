@@ -38,7 +38,7 @@ public class HypixelModAPI {
 
         // All responses contain a boolean of if the response is a success, if not then a string is included with the error message
         if (!serializer.readBoolean()) {
-            ErrorReason reason = ErrorReason.getById(serializer.readByte());
+            ErrorReason reason = ErrorReason.getById(serializer.readVarInt());
             throw new ModAPIException(packetType, reason);
         }
 
