@@ -7,8 +7,7 @@ At this time the API is in an early preview state to obtain feedback from the co
 
 ## Usage
 
-You can use this API as a dependency via the public Hypixel maven repo. You can also use
-the [Example Code](https://github.com/HypixelDev/PublicAPI/tree/master/hypixel-api-example) as a good starting point.
+You can use this API as a dependency via the public Hypixel maven repo.
 
 #### Hypixel Maven Repo
 

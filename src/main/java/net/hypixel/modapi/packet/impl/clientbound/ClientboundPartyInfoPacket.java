@@ -1,15 +1,12 @@
 package net.hypixel.modapi.packet.impl.clientbound;
 
-import net.hypixel.modapi.handler.ClientboundPacketHandler;
-import net.hypixel.modapi.packet.ClientboundHypixelPacket;
-import net.hypixel.modapi.packet.HypixelPacketType;
 import net.hypixel.modapi.packet.impl.VersionedPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class ClientboundPartyInfoPacket extends VersionedPacket implements ClientboundHypixelPacket {
+public class ClientboundPartyInfoPacket extends VersionedPacket {
     private static final int CURRENT_VERSION = 1;
 
     private final boolean inParty;
@@ -43,11 +40,6 @@ public class ClientboundPartyInfoPacket extends VersionedPacket implements Clien
     }
 
     @Override
-    public HypixelPacketType getType() {
-        return HypixelPacketType.PARTY_INFO;
-    }
-
-    @Override
     public void write(PacketSerializer serializer) {
         super.write(serializer);
         serializer.writeBoolean(inParty);
@@ -60,11 +52,6 @@ public class ClientboundPartyInfoPacket extends VersionedPacket implements Clien
         for (UUID member : members) {
             serializer.writeUuid(member);
         }
-    }
-
-    @Override
-    public void handle(ClientboundPacketHandler handler) {
-        handler.onPartyInfoPacket(this);
     }
 
     public boolean isInParty() {

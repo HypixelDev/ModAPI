@@ -2,16 +2,13 @@ package net.hypixel.modapi.packet.impl.clientbound;
 
 import net.hypixel.data.region.Environment;
 import net.hypixel.data.type.ServerType;
-import net.hypixel.modapi.handler.ClientboundPacketHandler;
-import net.hypixel.modapi.packet.ClientboundHypixelPacket;
-import net.hypixel.modapi.packet.HypixelPacketType;
 import net.hypixel.modapi.packet.impl.VersionedPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public class ClientboundLocationPacket extends VersionedPacket implements ClientboundHypixelPacket {
+public class ClientboundLocationPacket extends VersionedPacket {
     private static final int CURRENT_VERSION = 1;
 
     private final Environment environment;
@@ -49,11 +46,6 @@ public class ClientboundLocationPacket extends VersionedPacket implements Client
     }
 
     @Override
-    public HypixelPacketType getType() {
-        return HypixelPacketType.LOCATION;
-    }
-
-    @Override
     public void write(PacketSerializer serializer) {
         super.write(serializer);
         serializer.writeVarInt(environment.ordinal());
@@ -79,11 +71,6 @@ public class ClientboundLocationPacket extends VersionedPacket implements Client
         if (map != null) {
             serializer.writeString(map);
         }
-    }
-
-    @Override
-    public void handle(ClientboundPacketHandler handler) {
-        handler.onLocationPacket(this);
     }
 
     public Environment getEnvironment() {
