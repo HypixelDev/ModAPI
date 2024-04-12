@@ -9,6 +9,7 @@ import net.hypixel.modapi.packet.impl.clientbound.ClientboundLocationPacket;
 import net.hypixel.modapi.packet.impl.clientbound.ClientboundPartyInfoPacket;
 import net.hypixel.modapi.packet.impl.clientbound.ClientboundPingPacket;
 import net.hypixel.modapi.packet.impl.clientbound.ClientboundPlayerInfoPacket;
+import net.hypixel.modapi.packet.impl.serverbound.ServerboundLocationPacket;
 import net.hypixel.modapi.packet.impl.serverbound.ServerboundPartyInfoPacket;
 import net.hypixel.modapi.packet.impl.serverbound.ServerboundPingPacket;
 import net.hypixel.modapi.packet.impl.serverbound.ServerboundPlayerInfoPacket;
@@ -29,7 +30,7 @@ public class HypixelModAPI {
 
     private HypixelModAPI() {
         registry.registerPacketType("hypixel:ping", ClientboundPingPacket::new, ServerboundPingPacket::new);
-        registry.registerPacketType("hypixel:location", ClientboundLocationPacket::new, ServerboundPlayerInfoPacket::new);
+        registry.registerPacketType("hypixel:location", ClientboundLocationPacket::new, ServerboundLocationPacket::new);
         registry.registerPacketType("hypixel:party_info", ClientboundPartyInfoPacket::new, ServerboundPartyInfoPacket::new);
         registry.registerPacketType("hypixel:player_info", ClientboundPlayerInfoPacket::new, ServerboundPlayerInfoPacket::new);
     }
