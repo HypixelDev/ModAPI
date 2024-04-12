@@ -26,6 +26,11 @@ public class HypixelModAPI {
         packetHandlers.add(handler);
     }
 
+    public void unregisterHandler(ClientboundPacketHandler handler) {
+        handler.close();
+        packetHandlers.remove(handler);
+    }
+
     public void handle(String identifier, PacketSerializer serializer) {
         if (packetHandlers.isEmpty()) {
             return;

@@ -6,4 +6,5 @@ public interface PacketHandler {
 
     void handle(HypixelPacket packet);
 
+    void close();
 }
