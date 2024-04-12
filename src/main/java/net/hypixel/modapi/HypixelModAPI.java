@@ -29,10 +29,18 @@ public class HypixelModAPI {
     private final List<ClientboundPacketHandler> handlers = new CopyOnWriteArrayList<>();
 
     private HypixelModAPI() {
-        registry.registerPacketType("hypixel:ping", ClientboundPingPacket::new, ServerboundPingPacket::new);
-        registry.registerPacketType("hypixel:location", ClientboundLocationPacket::new, ServerboundLocationPacket::new);
-        registry.registerPacketType("hypixel:party_info", ClientboundPartyInfoPacket::new, ServerboundPartyInfoPacket::new);
-        registry.registerPacketType("hypixel:player_info", ClientboundPlayerInfoPacket::new, ServerboundPlayerInfoPacket::new);
+        registry.registerPacketType("hypixel:ping",
+                ClientboundPingPacket.class, ClientboundPingPacket::new,
+                ServerboundPingPacket.class, ServerboundPingPacket::new);
+        registry.registerPacketType("hypixel:location",
+                ClientboundLocationPacket.class, ClientboundLocationPacket::new,
+                ServerboundLocationPacket.class, ServerboundLocationPacket::new);
+        registry.registerPacketType("hypixel:party_info",
+                ClientboundPartyInfoPacket.class, ClientboundPartyInfoPacket::new,
+                ServerboundPartyInfoPacket.class, ServerboundPartyInfoPacket::new);
+        registry.registerPacketType("hypixel:player_info",
+                ClientboundPlayerInfoPacket.class, ClientboundPlayerInfoPacket::new,
+                ServerboundPlayerInfoPacket.class, ServerboundPlayerInfoPacket::new);
     }
 
     public PacketRegistry getRegistry() {

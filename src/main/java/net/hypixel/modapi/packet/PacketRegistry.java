@@ -10,16 +10,19 @@ import java.util.function.Function;
 
 public class PacketRegistry {
 
-    private final Map<String, RegisteredType> packetRegistry = new ConcurrentHashMap<>();
+    private final Map<String, RegisteredType> registrations = new ConcurrentHashMap<>();
+    private final Map<Class<? extends HypixelPacket>, String> classToIdentifier = new ConcurrentHashMap<>();
 
     public void registerPacketType(String identifier,
-                                   Function<PacketSerializer, HypixelPacket> clientPacketFactory,
-                                   Function<PacketSerializer, HypixelPacket> serverPacketFactory) {
-        packetRegistry.put(identifier, new RegisteredType(clientPacketFactory, serverPacketFactory));
+                                   Class<? extends HypixelPacket> clientboundClazz, Function<PacketSerializer, HypixelPacket> clientPacketFactory,
+                                   Class<? extends HypixelPacket> serverboundClazz, Function<PacketSerializer, HypixelPacket> serverPacketFactory) {
+        registrations.put(identifier, new RegisteredType(clientboundClazz, clientPacketFactory, serverboundClazz, serverPacketFactory));
+        classToIdentifier.put(clientboundClazz, identifier);
+        classToIdentifier.put(serverboundClazz, identifier);
     }
 
     private RegisteredType getRegisteredType(String identifier) {
-        RegisteredType registeredType = packetRegistry.get(identifier);
+        RegisteredType registeredType = registrations.get(identifier);
         if (registeredType == null) {
             throw new IllegalArgumentException("Unknown packet identifier: " + identifier);
         }
@@ -27,7 +30,7 @@ public class PacketRegistry {
     }
 
     public boolean isRegistered(String identifier) {
-        return packetRegistry.containsKey(identifier);
+        return registrations.containsKey(identifier);
     }
 
     public HypixelPacket createClientboundPacket(String identifier, PacketSerializer serializer) {
@@ -38,18 +41,26 @@ public class PacketRegistry {
         return getRegisteredType(identifier).serverPacketFactory.apply(serializer);
     }
 
+    public String getIdentifier(Class<? extends HypixelPacket> clazz) {
+        return classToIdentifier.get(clazz);
+    }
+
     public Set<String> getIdentifiers() {
-        return Collections.unmodifiableSet(packetRegistry.keySet());
+        return Collections.unmodifiableSet(registrations.keySet());
     }
 
     private static final class RegisteredType {
 
+        private final Class<? extends HypixelPacket> clientboundClazz;
         private final Function<PacketSerializer, HypixelPacket> clientPacketFactory;
+        private final Class<? extends HypixelPacket> serverboundClazz;
         private final Function<PacketSerializer, HypixelPacket> serverPacketFactory;
 
-        public RegisteredType(Function<PacketSerializer, HypixelPacket> clientPacketFactory,
-                              Function<PacketSerializer, HypixelPacket> serverPacketFactory) {
+        public RegisteredType(Class<? extends HypixelPacket> clientboundClazz, Function<PacketSerializer, HypixelPacket> clientPacketFactory,
+                              Class<? extends HypixelPacket> serverboundClazz, Function<PacketSerializer, HypixelPacket> serverPacketFactory) {
+            this.clientboundClazz = clientboundClazz;
             this.clientPacketFactory = clientPacketFactory;
+            this.serverboundClazz = serverboundClazz;
             this.serverPacketFactory = serverPacketFactory;
         }
     }
