@@ -3,7 +3,6 @@ package net.hypixel.modapi.packet.impl.clientbound;
 import net.hypixel.data.rank.MonthlyPackageRank;
 import net.hypixel.data.rank.PackageRank;
 import net.hypixel.data.rank.PlayerRank;
-import net.hypixel.modapi.packet.HypixelPacketType;
 import net.hypixel.modapi.packet.impl.VersionedPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
 import org.jetbrains.annotations.Nullable;
@@ -33,11 +32,6 @@ public class ClientboundPlayerInfoPacket extends VersionedPacket {
         this.packageRank = PackageRank.getById(serializer.readVarInt()).orElseThrow(() -> new IllegalArgumentException("Invalid package rank ID"));
         this.monthlyPackageRank = MonthlyPackageRank.getById(serializer.readVarInt()).orElseThrow(() -> new IllegalArgumentException("Invalid monthly package rank ID"));
         this.prefix = serializer.readBoolean() ? serializer.readString() : null;
-    }
-
-    @Override
-    public HypixelPacketType getType() {
-        return HypixelPacketType.PLAYER_INFO;
     }
 
     @Override

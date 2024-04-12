@@ -1,6 +1,5 @@
 package net.hypixel.modapi.packet.impl.serverbound;
 
-import net.hypixel.modapi.packet.HypixelPacketType;
 import net.hypixel.modapi.packet.impl.VersionedPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
 
@@ -15,8 +14,4 @@ public class ServerboundPingPacket extends VersionedPacket {
         super(serializer);
     }
 
-    @Override
-    public HypixelPacketType getType() {
-        return HypixelPacketType.PING;
-    }
 }

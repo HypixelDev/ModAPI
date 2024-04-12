@@ -1,6 +1,5 @@
 package net.hypixel.modapi.packet.impl.clientbound;
 
-import net.hypixel.modapi.packet.HypixelPacketType;
 import net.hypixel.modapi.packet.impl.VersionedPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
 import org.jetbrains.annotations.Nullable;
@@ -38,11 +37,6 @@ public class ClientboundPartyInfoPacket extends VersionedPacket {
             members.add(serializer.readUuid());
         }
         this.members = Collections.unmodifiableSet(members);
-    }
-
-    @Override
-    public HypixelPacketType getType() {
-        return HypixelPacketType.PARTY_INFO;
     }
 
     @Override

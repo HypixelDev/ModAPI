@@ -2,7 +2,6 @@ package net.hypixel.modapi.packet.impl.clientbound;
 
 import net.hypixel.data.region.Environment;
 import net.hypixel.data.type.ServerType;
-import net.hypixel.modapi.packet.HypixelPacketType;
 import net.hypixel.modapi.packet.impl.VersionedPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
 import org.jetbrains.annotations.Nullable;
@@ -44,11 +43,6 @@ public class ClientboundLocationPacket extends VersionedPacket {
         this.lobbyName = serializer.readBoolean() ? serializer.readString() : null;
         this.mode = serializer.readBoolean() ? serializer.readString() : null;
         this.map = serializer.readBoolean() ? serializer.readString() : null;
-    }
-
-    @Override
-    public HypixelPacketType getType() {
-        return HypixelPacketType.LOCATION;
     }
 
     @Override
