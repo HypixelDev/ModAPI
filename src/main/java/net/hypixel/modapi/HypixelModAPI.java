@@ -13,6 +13,7 @@ import net.hypixel.modapi.serializer.PacketSerializer;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Function;
 
 public class HypixelModAPI {
     private static final HypixelModAPI INSTANCE = new HypixelModAPI();
@@ -44,13 +45,18 @@ public class HypixelModAPI {
             return;
         }
 
+        Function<PacketSerializer, HypixelPacket> factory = packetRegistry.getPacketFactory(identifier);
+        if (factory == null) {
+            return;
+        }
+
         // All responses contain a boolean of if the response is a success, if not then a further var int is included to identify the error
         if (!serializer.readBoolean()) {
             ErrorReason reason = ErrorReason.getById(serializer.readVarInt());
             throw new ModAPIException(identifier, reason);
         }
 
-        HypixelPacket packet = packetRegistry.createPacket(identifier, serializer);
+        HypixelPacket packet = factory.apply(serializer);
         for (ClientboundPacketHandler handler : packetHandlers) {
             handler.handle(packet);
         }

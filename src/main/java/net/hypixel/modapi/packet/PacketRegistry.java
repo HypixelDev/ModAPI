@@ -1,6 +1,7 @@
 package net.hypixel.modapi.packet;
 
 import net.hypixel.modapi.serializer.PacketSerializer;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.Map;
@@ -16,12 +17,9 @@ public class PacketRegistry {
         packetRegistry.put(identifier, packetFactory);
     }
 
-    public HypixelPacket createPacket(String identifier, PacketSerializer serializer) {
-        Function<PacketSerializer, HypixelPacket> packetFactory = packetRegistry.get(identifier);
-        if (packetFactory == null) {
-            throw new IllegalArgumentException("Unknown packet identifier: " + identifier);
-        }
-        return packetFactory.apply(serializer);
+    @Nullable
+    public Function<PacketSerializer, HypixelPacket> getPacketFactory(String identifier) {
+        return packetRegistry.get(identifier);
     }
 
     public Set<String> getIdentifiers() {
