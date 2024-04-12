@@ -14,7 +14,7 @@ public class PacketRegistry {
     private final Map<Class<? extends HypixelPacket>, String> classToIdentifier = new ConcurrentHashMap<>();
 
     public void registerPacketType(String identifier,
-                                   Class<? extends HypixelPacket> clientboundClazz, Function<PacketSerializer, HypixelPacket> clientPacketFactory,
+                                   Class<? extends ClientboundHypixelPacket> clientboundClazz, Function<PacketSerializer, ClientboundHypixelPacket> clientPacketFactory,
                                    Class<? extends HypixelPacket> serverboundClazz, Function<PacketSerializer, HypixelPacket> serverPacketFactory) {
         registrations.put(identifier, new RegisteredType(clientboundClazz, clientPacketFactory, serverboundClazz, serverPacketFactory));
         classToIdentifier.put(clientboundClazz, identifier);
@@ -33,7 +33,7 @@ public class PacketRegistry {
         return registrations.containsKey(identifier);
     }
 
-    public HypixelPacket createClientboundPacket(String identifier, PacketSerializer serializer) {
+    public ClientboundHypixelPacket createClientboundPacket(String identifier, PacketSerializer serializer) {
         return getRegisteredType(identifier).clientPacketFactory.apply(serializer);
     }
 
@@ -51,12 +51,12 @@ public class PacketRegistry {
 
     private static final class RegisteredType {
 
-        private final Class<? extends HypixelPacket> clientboundClazz;
-        private final Function<PacketSerializer, HypixelPacket> clientPacketFactory;
+        private final Class<? extends ClientboundHypixelPacket> clientboundClazz;
+        private final Function<PacketSerializer, ClientboundHypixelPacket> clientPacketFactory;
         private final Class<? extends HypixelPacket> serverboundClazz;
         private final Function<PacketSerializer, HypixelPacket> serverPacketFactory;
 
-        public RegisteredType(Class<? extends HypixelPacket> clientboundClazz, Function<PacketSerializer, HypixelPacket> clientPacketFactory,
+        public RegisteredType(Class<? extends ClientboundHypixelPacket> clientboundClazz, Function<PacketSerializer, ClientboundHypixelPacket> clientPacketFactory,
                               Class<? extends HypixelPacket> serverboundClazz, Function<PacketSerializer, HypixelPacket> serverPacketFactory) {
             this.clientboundClazz = clientboundClazz;
             this.clientPacketFactory = clientPacketFactory;

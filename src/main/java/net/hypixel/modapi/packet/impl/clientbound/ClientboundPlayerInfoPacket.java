@@ -3,13 +3,15 @@ package net.hypixel.modapi.packet.impl.clientbound;
 import net.hypixel.data.rank.MonthlyPackageRank;
 import net.hypixel.data.rank.PackageRank;
 import net.hypixel.data.rank.PlayerRank;
+import net.hypixel.modapi.handler.ClientboundPacketHandler;
+import net.hypixel.modapi.packet.ClientboundHypixelPacket;
 import net.hypixel.modapi.packet.impl.VersionedPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public class ClientboundPlayerInfoPacket extends VersionedPacket {
+public class ClientboundPlayerInfoPacket extends VersionedPacket implements ClientboundHypixelPacket {
     private static final int CURRENT_VERSION = 1;
 
     private final PlayerRank playerRank;
@@ -44,6 +46,11 @@ public class ClientboundPlayerInfoPacket extends VersionedPacket {
         if (prefix != null) {
             serializer.writeString(prefix);
         }
+    }
+
+    @Override
+    public void handle(ClientboundPacketHandler handler) {
+        handler.handle(this);
     }
 
     public PlayerRank getPlayerRank() {
