@@ -26,6 +26,10 @@ public class PacketRegistry {
         return registeredType;
     }
 
+    public boolean isRegistered(String identifier) {
+        return packetRegistry.containsKey(identifier);
+    }
+
     public HypixelPacket createClientboundPacket(String identifier, PacketSerializer serializer) {
         return getRegisteredType(identifier).clientPacketFactory.apply(serializer);
     }

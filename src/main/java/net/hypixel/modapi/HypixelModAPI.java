@@ -48,6 +48,10 @@ public class HypixelModAPI {
             return;
         }
 
+        if (!registry.isRegistered(identifier)) {
+            return;
+        }
+
         // All responses contain a boolean of if the response is a success, if not then a further var int is included to identify the error
         if (!serializer.readBoolean()) {
             ErrorReason reason = ErrorReason.getById(serializer.readVarInt());
