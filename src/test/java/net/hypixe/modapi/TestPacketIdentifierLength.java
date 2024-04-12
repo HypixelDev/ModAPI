@@ -9,7 +9,7 @@ public class TestPacketIdentifierLength {
 
     @Test
     void testPacketIdentifierLength() {
-        for (String identifier : HypixelModAPI.getInstance().getPacketRegistry().getIdentifiers()) {
+        for (String identifier : HypixelModAPI.getInstance().getRegistry().getIdentifiers()) {
             Assertions.assertTrue(identifier.length() <= LIMIT, String.format("Identifier %s is too long (length %d)", identifier, identifier.length()));
         }
     }

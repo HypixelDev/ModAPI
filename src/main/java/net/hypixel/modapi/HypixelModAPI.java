@@ -22,30 +22,30 @@ public class HypixelModAPI {
         return INSTANCE;
     }
 
-    private final PacketRegistry packetRegistry = new PacketRegistry();
-    private final List<ClientboundPacketHandler> packetHandlers = new CopyOnWriteArrayList<>();
+    private final PacketRegistry registry = new PacketRegistry();
+    private final List<ClientboundPacketHandler> handlers = new CopyOnWriteArrayList<>();
 
     private HypixelModAPI() {
-        packetRegistry.registerPacketType("hypixel:ping", ClientboundPingPacket::new);
-        packetRegistry.registerPacketType("hypixel:location", ClientboundLocationPacket::new);
-        packetRegistry.registerPacketType("hypixel:party_info", ClientboundPartyInfoPacket::new);
-        packetRegistry.registerPacketType("hypixel:player_info", ClientboundPlayerInfoPacket::new);
+        registry.registerPacketType("hypixel:ping", ClientboundPingPacket::new);
+        registry.registerPacketType("hypixel:location", ClientboundLocationPacket::new);
+        registry.registerPacketType("hypixel:party_info", ClientboundPartyInfoPacket::new);
+        registry.registerPacketType("hypixel:player_info", ClientboundPlayerInfoPacket::new);
     }
 
-    public PacketRegistry getPacketRegistry() {
-        return packetRegistry;
+    public PacketRegistry getRegistry() {
+        return registry;
     }
 
     public void registerHandler(ClientboundPacketHandler handler) {
-        packetHandlers.add(handler);
+        handlers.add(handler);
     }
 
     public void handle(String identifier, PacketSerializer serializer) {
-        if (packetHandlers.isEmpty()) {
+        if (handlers.isEmpty()) {
             return;
         }
 
-        Function<PacketSerializer, HypixelPacket> factory = packetRegistry.getPacketFactory(identifier);
+        Function<PacketSerializer, HypixelPacket> factory = registry.getPacketFactory(identifier);
         if (factory == null) {
             return;
         }
@@ -57,7 +57,7 @@ public class HypixelModAPI {
         }
 
         HypixelPacket packet = factory.apply(serializer);
-        for (ClientboundPacketHandler handler : packetHandlers) {
+        for (ClientboundPacketHandler handler : handlers) {
             handler.handle(packet);
         }
     }
