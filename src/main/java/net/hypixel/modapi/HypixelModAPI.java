@@ -53,7 +53,7 @@ public class HypixelModAPI {
 
     public void unregisterHandler(ClientboundPacketHandler handler) {
         handler.close();
-        packetHandlers.remove(handler);
+        handlers.remove(handler);
     }
 
     public void handle(String identifier, PacketSerializer serializer) {

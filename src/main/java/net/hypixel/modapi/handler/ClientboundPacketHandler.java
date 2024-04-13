@@ -18,4 +18,7 @@ public interface ClientboundPacketHandler {
 
     default void onPlayerInfoPacket(ClientboundPlayerInfoPacket packet) {
     }
+
+    default void close() {
+    }
 }
