@@ -22,7 +22,7 @@ public class HypixelModAPI {
     private final PacketRegistry registry = new PacketRegistry();
     private final List<ClientboundPacketHandler> handlers = new CopyOnWriteArrayList<>();
 
-    private HypixelModAPI() {
+    public HypixelModAPI() {
         registry.registerPacketType("hypixel:ping",
                 ClientboundPingPacket.class, ClientboundPingPacket::new,
                 ServerboundPingPacket.class, ServerboundPingPacket::new);
