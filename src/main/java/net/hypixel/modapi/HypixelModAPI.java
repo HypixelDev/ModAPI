@@ -3,6 +3,7 @@ package net.hypixel.modapi;
 import net.hypixel.modapi.error.ErrorReason;
 import net.hypixel.modapi.error.ModAPIException;
 import net.hypixel.modapi.handler.ClientboundPacketHandler;
+import net.hypixel.modapi.handler.RegisteredHandler;
 import net.hypixel.modapi.packet.ClientboundHypixelPacket;
 import net.hypixel.modapi.packet.PacketRegistry;
 import net.hypixel.modapi.packet.impl.clientbound.ClientboundLocationPacket;
@@ -47,8 +48,9 @@ public class HypixelModAPI {
         return registry;
     }
 
-    public void registerHandler(ClientboundPacketHandler handler) {
+    public RegisteredHandler registerHandler(ClientboundPacketHandler handler) {
         handlers.add(handler);
+        return new RegisteredHandlerImpl(handlers, handler);
     }
 
     public void handle(String identifier, PacketSerializer serializer) {
