@@ -1,10 +1,11 @@
 package net.hypixel.modapi.packet.impl.clientbound;
 
-import net.hypixel.modapi.packet.HypixelPacketType;
+import net.hypixel.modapi.handler.ClientboundPacketHandler;
+import net.hypixel.modapi.packet.ClientboundHypixelPacket;
 import net.hypixel.modapi.packet.impl.VersionedPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
 
-public class ClientboundPingPacket extends VersionedPacket {
+public class ClientboundPingPacket extends VersionedPacket implements ClientboundHypixelPacket {
     private static final int CURRENT_VERSION = 1;
 
     private final String response;
@@ -20,14 +21,14 @@ public class ClientboundPingPacket extends VersionedPacket {
     }
 
     @Override
-    public HypixelPacketType getType() {
-        return HypixelPacketType.PING;
-    }
-
-    @Override
     public void write(PacketSerializer serializer) {
         super.write(serializer);
         serializer.writeString(response);
+    }
+
+    @Override
+    public void handle(ClientboundPacketHandler handler) {
+        handler.onPingPacket(this);
     }
 
     public String getResponse() {

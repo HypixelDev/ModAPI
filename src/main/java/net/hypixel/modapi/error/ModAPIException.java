@@ -1,19 +1,17 @@
 package net.hypixel.modapi.error;
 
-import net.hypixel.modapi.packet.HypixelPacketType;
-
 public class ModAPIException extends RuntimeException {
-    private final HypixelPacketType packetType;
+    private final String identifier;
     private final ErrorReason reason;
 
-    public ModAPIException(HypixelPacketType packetType, ErrorReason reason) {
-        super(String.format("Received error response '%s' from packet '%s'", reason, packetType));
-        this.packetType = packetType;
+    public ModAPIException(String identifier, ErrorReason reason) {
+        super(String.format("Received error response '%s' from packet '%s'", reason, identifier));
+        this.identifier = identifier;
         this.reason = reason;
     }
 
-    public HypixelPacketType getPacketType() {
-        return packetType;
+    public String getIdentifier() {
+        return identifier;
     }
 
     public ErrorReason getReason() {
@@ -23,7 +21,7 @@ public class ModAPIException extends RuntimeException {
     @Override
     public String toString() {
         return "ModAPIException{" +
-                "packetType=" + packetType +
+                "identifier='" + identifier + '\'' +
                 ", reason=" + reason +
                 "} " + super.toString();
     }

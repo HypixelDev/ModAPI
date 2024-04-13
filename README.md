@@ -7,8 +7,7 @@ At this time the API is in an early preview state to obtain feedback from the co
 
 ## Usage
 
-You can use this API as a dependency via the public Hypixel maven repo. You can also use
-the [Example Code](https://github.com/HypixelDev/PublicAPI/tree/master/hypixel-api-example) as a good starting point.
+You can use this API as a dependency via the public Hypixel maven repo.
 
 #### Hypixel Maven Repo
 
@@ -33,12 +32,12 @@ You can then include the dependency in your project.
 <dependency>
     <groupId>net.hypixel</groupId>
     <artifactId>mod-api</artifactId>
-    <version>0.2.1</version>
+    <version>0.3.1</version>
 </dependency>
 ```
 
 ```gradle
 dependencies {
-    implementation 'net.hypixel:mod-api:0.2.1'
+    implementation 'net.hypixel:mod-api:0.3.1'
 }
 ```
