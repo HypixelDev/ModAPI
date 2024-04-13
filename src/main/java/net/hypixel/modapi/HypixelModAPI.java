@@ -19,12 +19,6 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class HypixelModAPI {
-    private static final HypixelModAPI INSTANCE = new HypixelModAPI();
-
-    public static HypixelModAPI getInstance() {
-        return INSTANCE;
-    }
-
     private final PacketRegistry registry = new PacketRegistry();
     private final List<ClientboundPacketHandler> handlers = new CopyOnWriteArrayList<>();
 
