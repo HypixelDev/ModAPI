@@ -5,7 +5,7 @@ import net.hypixel.modapi.packet.impl.clientbound.ClientboundPartyInfoPacket;
 import net.hypixel.modapi.packet.impl.clientbound.ClientboundPingPacket;
 import net.hypixel.modapi.packet.impl.clientbound.ClientboundPlayerInfoPacket;
 
-public interface ClientboundPacketHandler extends PacketHandler {
+public interface ClientboundPacketHandler {
 
     default void onPingPacket(ClientboundPingPacket packet) {
     }

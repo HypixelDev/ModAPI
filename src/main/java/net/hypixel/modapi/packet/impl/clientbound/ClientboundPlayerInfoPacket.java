@@ -50,7 +50,7 @@ public class ClientboundPlayerInfoPacket extends VersionedPacket implements Clie
 
     @Override
     public void handle(ClientboundPacketHandler handler) {
-        handler.handle(this);
+        handler.onPlayerInfoPacket(this);
     }
 
     public PlayerRank getPlayerRank() {

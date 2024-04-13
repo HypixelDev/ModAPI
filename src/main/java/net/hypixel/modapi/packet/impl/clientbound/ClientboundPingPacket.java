@@ -28,7 +28,7 @@ public class ClientboundPingPacket extends VersionedPacket implements Clientboun
 
     @Override
     public void handle(ClientboundPacketHandler handler) {
-        handler.handle(this);
+        handler.onPingPacket(this);
     }
 
     public String getResponse() {

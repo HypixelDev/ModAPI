@@ -77,7 +77,7 @@ public class ClientboundLocationPacket extends VersionedPacket implements Client
 
     @Override
     public void handle(ClientboundPacketHandler handler) {
-        handler.handle(this);
+        handler.onLocationPacket(this);
     }
 
     public Environment getEnvironment() {

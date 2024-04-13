@@ -58,7 +58,7 @@ public class ClientboundPartyInfoPacket extends VersionedPacket implements Clien
 
     @Override
     public void handle(ClientboundPacketHandler handler) {
-        handler.handle(this);
+        handler.onPartyInfoPacket(this);
     }
 
     public boolean isInParty() {
