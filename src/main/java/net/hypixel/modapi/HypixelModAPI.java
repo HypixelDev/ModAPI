@@ -29,18 +29,22 @@ public class HypixelModAPI {
     private final List<ClientboundPacketHandler> handlers = new CopyOnWriteArrayList<>();
 
     private HypixelModAPI() {
-        registry.registerPacketType("hypixel:ping",
-                ClientboundPingPacket.class, ClientboundPingPacket::new,
-                ServerboundPingPacket.class, ServerboundPingPacket::new);
-        registry.registerPacketType("hypixel:location",
-                ClientboundLocationPacket.class, ClientboundLocationPacket::new,
-                ServerboundLocationPacket.class, ServerboundLocationPacket::new);
-        registry.registerPacketType("hypixel:party_info",
-                ClientboundPartyInfoPacket.class, ClientboundPartyInfoPacket::new,
-                ServerboundPartyInfoPacket.class, ServerboundPartyInfoPacket::new);
-        registry.registerPacketType("hypixel:player_info",
-                ClientboundPlayerInfoPacket.class, ClientboundPlayerInfoPacket::new,
-                ServerboundPlayerInfoPacket.class, ServerboundPlayerInfoPacket::new);
+        registry.define("hypixel:ping")
+                .clientbound(ClientboundPingPacket.class, ClientboundPingPacket::new)
+                .serverbound(ServerboundPingPacket.class, ServerboundPingPacket::new)
+                .register();
+        registry.define("hypixel:location")
+                .clientbound(ClientboundLocationPacket.class, ClientboundLocationPacket::new)
+                .serverbound(ServerboundLocationPacket.class, ServerboundLocationPacket::new)
+                .register();
+        registry.define("hypixel:party_info")
+                .clientbound(ClientboundPartyInfoPacket.class, ClientboundPartyInfoPacket::new)
+                .serverbound(ServerboundPartyInfoPacket.class, ServerboundPartyInfoPacket::new)
+                .register();
+        registry.define("hypixel:player_info")
+                .clientbound(ClientboundPlayerInfoPacket.class, ClientboundPlayerInfoPacket::new)
+                .serverbound(ServerboundPlayerInfoPacket.class, ServerboundPlayerInfoPacket::new)
+                .register();
     }
 
     public PacketRegistry getRegistry() {
