@@ -58,6 +58,24 @@ public class PacketSerializer {
         return this;
     }
 
+    public long readLong() {
+        return this.buf.readLong();
+    }
+
+    public PacketSerializer writeLong(long value) {
+        this.buf.writeLong(value);
+        return this;
+    }
+
+    public double readDouble() {
+        return this.buf.readDouble();
+    }
+
+    public PacketSerializer writeDouble(double value) {
+        this.buf.writeDouble(value);
+        return this;
+    }
+
     public String readString() {
         return this.readString(MAX_STRING_LENGTH);
     }
