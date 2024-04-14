@@ -18,8 +18,12 @@ public class PacketRegistry {
             Class<? extends ClientboundHypixelPacket> clientboundClazz, Function<PacketSerializer, ? extends ClientboundHypixelPacket> clientPacketFactory,
             Class<? extends HypixelPacket> serverboundClazz, Function<PacketSerializer, ? extends HypixelPacket> serverPacketFactory) {
         registrations.put(identifier, new Registration(clientboundClazz, clientPacketFactory, serverboundClazz, serverPacketFactory));
-        classToIdentifier.put(clientboundClazz, identifier);
-        classToIdentifier.put(serverboundClazz, identifier);
+        if (clientboundClazz != null) {
+            classToIdentifier.put(clientboundClazz, identifier);
+        }
+        if (serverboundClazz != null) {
+            classToIdentifier.put(serverboundClazz, identifier);
+        }
     }
 
     public RegistrationBuilder define(String identifier) {
