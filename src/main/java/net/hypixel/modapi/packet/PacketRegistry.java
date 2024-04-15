@@ -2,6 +2,7 @@ package net.hypixel.modapi.packet;
 
 import net.hypixel.modapi.serializer.PacketSerializer;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -36,6 +37,10 @@ public class PacketRegistry {
             throw new IllegalArgumentException("Unknown packet identifier: " + identifier);
         }
         return registration;
+    }
+
+    Collection<Registration> getRegistrations() {
+        return registrations.values();
     }
 
     public boolean isRegistered(String identifier) {
@@ -92,7 +97,7 @@ public class PacketRegistry {
 
     }
 
-    private static final class Registration {
+    static final class Registration {
 
         private final Class<? extends ClientboundHypixelPacket> clientboundClazz;
         private final Function<PacketSerializer, ? extends ClientboundHypixelPacket> clientPacketFactory;
@@ -107,13 +112,19 @@ public class PacketRegistry {
             this.serverPacketFactory = serverPacketFactory;
         }
 
+        Class<? extends ClientboundHypixelPacket> getClientboundClazz() {
+            return clientboundClazz;
+        }
+
+        Class<? extends HypixelPacket> getServerboundClazz() {
+            return serverboundClazz;
+        }
+
         @Override
         public String toString() {
             return "Registration{" +
                     "clientboundClazz=" + clientboundClazz +
-                    ", clientPacketFactory=" + clientPacketFactory +
                     ", serverboundClazz=" + serverboundClazz +
-                    ", serverPacketFactory=" + serverPacketFactory +
                     '}';
         }
     }

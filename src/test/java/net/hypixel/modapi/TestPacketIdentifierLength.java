@@ -1,6 +1,5 @@
-package net.hypixe.modapi;
+package net.hypixel.modapi;
 
-import net.hypixel.modapi.HypixelModAPI;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
