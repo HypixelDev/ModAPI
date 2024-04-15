@@ -4,8 +4,12 @@ import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
 import io.netty.handler.codec.EncoderException;
 import io.netty.util.CharsetUtil;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
 import java.util.UUID;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 public class PacketSerializer {
     private static final int MAX_BYTES_PER_CHAR_UTF8 = (int) CharsetUtil.getEncoder(CharsetUtil.UTF_8).maxBytesPerChar();
@@ -132,6 +136,27 @@ public class PacketSerializer {
     public PacketSerializer writeUuid(UUID uuid) {
         this.buf.writeLong(uuid.getMostSignificantBits());
         this.buf.writeLong(uuid.getLeastSignificantBits());
+        return this;
+    }
+
+    public <T> Optional<T> readOptional(Function<PacketSerializer, T> function) {
+        return this.readBoolean() ? Optional.of(function.apply(this)) : Optional.empty();
+    }
+
+    @Nullable
+    public <T> T readOptionally(Function<PacketSerializer, T> function) {
+        return this.readBoolean() ? function.apply(this) : null;
+    }
+
+    public <T> PacketSerializer writeOptional(Optional<T> optional, BiConsumer<PacketSerializer, T> consumer) {
+        return writeOptionally(optional.orElse(null), consumer);
+    }
+
+    public <T> PacketSerializer writeOptionally(@Nullable T value, BiConsumer<PacketSerializer, T> consumer) {
+        this.writeBoolean(value != null);
+        if (value != null) {
+            consumer.accept(this, value);
+        }
         return this;
     }
 

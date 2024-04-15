@@ -41,10 +41,10 @@ public class ClientboundLocationPacket extends VersionedPacket implements Client
         this.environment = Environment.getById(serializer.readVarInt()).orElseThrow(() -> new IllegalArgumentException("Invalid environment ID"));
         this.proxyName = serializer.readString();
         this.serverName = serializer.readString();
-        this.serverType = serializer.readBoolean() ? ServerType.valueOf(serializer.readString()).orElse(null) : null;
-        this.lobbyName = serializer.readBoolean() ? serializer.readString() : null;
-        this.mode = serializer.readBoolean() ? serializer.readString() : null;
-        this.map = serializer.readBoolean() ? serializer.readString() : null;
+        this.serverType = serializer.readOptional(PacketSerializer::readString).flatMap(ServerType::valueOf).orElse(null);
+        this.lobbyName = serializer.readOptionally(PacketSerializer::readString);
+        this.mode = serializer.readOptionally(PacketSerializer::readString);
+        this.map = serializer.readOptionally(PacketSerializer::readString);
     }
 
     @Override
@@ -53,26 +53,10 @@ public class ClientboundLocationPacket extends VersionedPacket implements Client
         serializer.writeVarInt(environment.ordinal());
         serializer.writeString(proxyName);
         serializer.writeString(serverName);
-
-        serializer.writeBoolean(serverType != null);
-        if (serverType != null) {
-            serializer.writeString(serverType.name());
-        }
-
-        serializer.writeBoolean(lobbyName != null);
-        if (lobbyName != null) {
-            serializer.writeString(lobbyName);
-        }
-
-        serializer.writeBoolean(mode != null);
-        if (mode != null) {
-            serializer.writeString(mode);
-        }
-
-        serializer.writeBoolean(map != null);
-        if (map != null) {
-            serializer.writeString(map);
-        }
+        serializer.writeOptionally(serverType, (s, t) -> s.writeString(t.name()));
+        serializer.writeOptionally(lobbyName, PacketSerializer::writeString);
+        serializer.writeOptionally(mode, PacketSerializer::writeString);
+        serializer.writeOptionally(map, PacketSerializer::writeString);
     }
 
     @Override
