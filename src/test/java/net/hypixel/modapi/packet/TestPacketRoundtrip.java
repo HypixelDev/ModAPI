@@ -1,5 +1,6 @@
 package net.hypixel.modapi.packet;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.hypixel.modapi.HypixelModAPI;
 import net.hypixel.modapi.serializer.PacketSerializer;
@@ -24,9 +25,14 @@ public class TestPacketRoundtrip {
     }
 
     private static ClientboundHypixelPacket doPacketRoundtrip(HypixelPacket packet) {
-        PacketSerializer serializer = new PacketSerializer(Unpooled.buffer());
-        packet.write(serializer);
-        return handleServerbound(packet.getIdentifier(), serializer);
+        ByteBuf buf = Unpooled.buffer();
+        try {
+            PacketSerializer serializer = new PacketSerializer(buf);
+            packet.write(serializer);
+            return handleServerbound(packet.getIdentifier(), serializer);
+        } finally {
+            buf.release();
+        }
     }
 
     private static Stream<Arguments> packetProvider() {
