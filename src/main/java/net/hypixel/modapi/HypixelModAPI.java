@@ -16,7 +16,6 @@ import net.hypixel.modapi.packet.impl.serverbound.ServerboundPlayerInfoPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class HypixelModAPI {
@@ -66,9 +65,9 @@ public class HypixelModAPI {
         }
 
         // All responses contain a boolean of if the response is a success, if not then a further var int is included to identify the error
-        Optional<ErrorReason> errorReasonOptional = serializer.readOptional(PacketSerializer::readVarInt).map(ErrorReason::getById);
-        if (errorReasonOptional.isPresent()) {
-            throw new ModAPIException(identifier, errorReasonOptional.get());
+        if (!serializer.readBoolean()) {
+            ErrorReason reason = ErrorReason.getById(serializer.readVarInt());
+            throw new ModAPIException(identifier, reason);
         }
 
         ClientboundHypixelPacket packet = registry.createClientboundPacket(identifier, serializer);
