@@ -33,7 +33,7 @@ public class ClientboundPlayerInfoPacket extends VersionedPacket implements Clie
         this.playerRank = PlayerRank.getById(serializer.readVarInt()).orElseThrow(() -> new IllegalArgumentException("Invalid player rank ID"));
         this.packageRank = PackageRank.getById(serializer.readVarInt()).orElseThrow(() -> new IllegalArgumentException("Invalid package rank ID"));
         this.monthlyPackageRank = MonthlyPackageRank.getById(serializer.readVarInt()).orElseThrow(() -> new IllegalArgumentException("Invalid monthly package rank ID"));
-        this.prefix = serializer.readBoolean() ? serializer.readString() : null;
+        this.prefix = serializer.readOptionally(PacketSerializer::readString);
     }
 
     @Override
@@ -42,10 +42,7 @@ public class ClientboundPlayerInfoPacket extends VersionedPacket implements Clie
         serializer.writeVarInt(playerRank.getId());
         serializer.writeVarInt(packageRank.getId());
         serializer.writeVarInt(monthlyPackageRank.getId());
-        serializer.writeBoolean(prefix != null);
-        if (prefix != null) {
-            serializer.writeString(prefix);
-        }
+        serializer.writeOptionally(prefix, PacketSerializer::writeString);
     }
 
     @Override
