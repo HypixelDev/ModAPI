@@ -14,11 +14,11 @@ import java.util.Optional;
 public class ClientboundPlayerInfoPacket extends VersionedPacket implements ClientboundHypixelPacket {
     private static final int CURRENT_VERSION = 1;
 
-    private final PlayerRank playerRank;
-    private final PackageRank packageRank;
-    private final MonthlyPackageRank monthlyPackageRank;
+    private PlayerRank playerRank;
+    private PackageRank packageRank;
+    private MonthlyPackageRank monthlyPackageRank;
     @Nullable
-    private final String prefix;
+    private String prefix;
 
     public ClientboundPlayerInfoPacket(PlayerRank playerRank, PackageRank packageRank, MonthlyPackageRank monthlyPackageRank, @Nullable String prefix) {
         super(CURRENT_VERSION);
@@ -30,10 +30,19 @@ public class ClientboundPlayerInfoPacket extends VersionedPacket implements Clie
 
     public ClientboundPlayerInfoPacket(PacketSerializer serializer) {
         super(serializer);
+    }
+
+    @Override
+    protected boolean read(PacketSerializer serializer) {
+        if (!super.read(serializer)) {
+            return false;
+        }
+
         this.playerRank = PlayerRank.getById(serializer.readVarInt()).orElseThrow(() -> new IllegalArgumentException("Invalid player rank ID"));
         this.packageRank = PackageRank.getById(serializer.readVarInt()).orElseThrow(() -> new IllegalArgumentException("Invalid package rank ID"));
         this.monthlyPackageRank = MonthlyPackageRank.getById(serializer.readVarInt()).orElseThrow(() -> new IllegalArgumentException("Invalid monthly package rank ID"));
         this.prefix = serializer.readOptionally(PacketSerializer::readString);
+        return true;
     }
 
     @Override
@@ -43,6 +52,11 @@ public class ClientboundPlayerInfoPacket extends VersionedPacket implements Clie
         serializer.writeVarInt(packageRank.getId());
         serializer.writeVarInt(monthlyPackageRank.getId());
         serializer.writeOptionally(prefix, PacketSerializer::writeString);
+    }
+
+    @Override
+    protected int getLatestVersion() {
+        return CURRENT_VERSION;
     }
 
     @Override

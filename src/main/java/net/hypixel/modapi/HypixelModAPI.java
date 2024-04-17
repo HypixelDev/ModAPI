@@ -5,6 +5,7 @@ import net.hypixel.modapi.error.ModAPIException;
 import net.hypixel.modapi.handler.ClientboundPacketHandler;
 import net.hypixel.modapi.packet.ClientboundHypixelPacket;
 import net.hypixel.modapi.packet.PacketRegistry;
+import net.hypixel.modapi.packet.impl.VersionedPacket;
 import net.hypixel.modapi.packet.impl.clientbound.ClientboundLocationPacket;
 import net.hypixel.modapi.packet.impl.clientbound.ClientboundPartyInfoPacket;
 import net.hypixel.modapi.packet.impl.clientbound.ClientboundPingPacket;
@@ -71,6 +72,11 @@ public class HypixelModAPI {
         }
 
         ClientboundHypixelPacket packet = registry.createClientboundPacket(identifier, serializer);
+        if (packet instanceof VersionedPacket && !((VersionedPacket) packet).isExpectedVersion()) {
+            // Ignore packets that don't match our expected version, these could be received due to other mods requesting them
+            return;
+        }
+
         for (ClientboundPacketHandler handler : handlers) {
             packet.handle(handler);
         }

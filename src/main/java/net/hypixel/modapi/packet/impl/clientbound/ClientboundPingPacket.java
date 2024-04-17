@@ -8,7 +8,7 @@ import net.hypixel.modapi.serializer.PacketSerializer;
 public class ClientboundPingPacket extends VersionedPacket implements ClientboundHypixelPacket {
     private static final int CURRENT_VERSION = 1;
 
-    private final String response;
+    private String response;
 
     public ClientboundPingPacket(String response) {
         super(CURRENT_VERSION);
@@ -17,13 +17,27 @@ public class ClientboundPingPacket extends VersionedPacket implements Clientboun
 
     public ClientboundPingPacket(PacketSerializer serializer) {
         super(serializer);
+    }
+
+    @Override
+    protected boolean read(PacketSerializer serializer) {
+        if (!super.read(serializer)) {
+            return false;
+        }
+
         this.response = serializer.readString();
+        return true;
     }
 
     @Override
     public void write(PacketSerializer serializer) {
         super.write(serializer);
         serializer.writeString(response);
+    }
+
+    @Override
+    protected int getLatestVersion() {
+        return CURRENT_VERSION;
     }
 
     @Override
