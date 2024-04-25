@@ -38,6 +38,7 @@ public class TestPacketRoundtrip {
     private static Stream<Arguments> packetProvider() {
         return HypixelModAPI.getInstance().getRegistry().getRegistrations().stream()
                 .filter(registration -> registration.getServerboundClazz() != null)
+                .filter(registration -> registration.getClientboundClazz() != null)
                 .map(Arguments::of);
     }
 
