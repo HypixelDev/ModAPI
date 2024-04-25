@@ -11,9 +11,9 @@ public class PartyInfoHandler implements PacketHandler<ServerboundPartyInfoPacke
     @Override
     public ClientboundHypixelPacket handle(String identifier, ServerboundPartyInfoPacket packet) {
         return new ClientboundPartyInfoPacket(
+                2,
                 false,
-                null,
-                Collections.emptySet()
+                Collections.emptyMap()
         );
     }
 }
