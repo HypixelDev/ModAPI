@@ -1,9 +1,8 @@
 package net.hypixel.modapi.packet.impl.serverbound;
 
-import net.hypixel.modapi.packet.impl.VersionedPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
 
-public class ServerboundPartyInfoPacket extends VersionedPacket {
+public class ServerboundPartyInfoPacket extends ServerboundVersionedPacket {
     private static final int CURRENT_VERSION = 1;
 
     public ServerboundPartyInfoPacket() {
@@ -12,11 +11,6 @@ public class ServerboundPartyInfoPacket extends VersionedPacket {
 
     public ServerboundPartyInfoPacket(PacketSerializer serializer) {
         super(serializer);
-    }
-
-    @Override
-    protected int getLatestVersion() {
-        return CURRENT_VERSION;
     }
 
 }

@@ -7,7 +7,7 @@ import net.hypixel.modapi.serializer.PacketSerializer;
  * Represents a packet that is backed by a version. Versioned packets will only be handled if the incoming packet matches the version of the packet known.
  */
 public abstract class VersionedPacket implements HypixelPacket {
-    private int version;
+    protected int version;
 
     public VersionedPacket(int version) {
         this.version = version;
@@ -20,10 +20,7 @@ public abstract class VersionedPacket implements HypixelPacket {
     /**
      * @return true if reading was successful, false if otherwise (such as due to a mismatch in version)
      */
-    protected boolean read(PacketSerializer serializer) {
-        this.version = serializer.readVarInt();
-        return isExpectedVersion();
-    }
+    protected abstract boolean read(PacketSerializer serializer);
 
     @Override
     public void write(PacketSerializer serializer) {
@@ -32,12 +29,6 @@ public abstract class VersionedPacket implements HypixelPacket {
 
     public int getVersion() {
         return version;
-    }
-
-    protected abstract int getLatestVersion();
-
-    public boolean isExpectedVersion() {
-        return getVersion() == getLatestVersion();
     }
 
     @Override

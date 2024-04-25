@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public class ClientboundPlayerInfoPacket extends VersionedPacket implements ClientboundHypixelPacket {
+public class ClientboundPlayerInfoPacket extends ClientboundVersionedPacket {
     private static final int CURRENT_VERSION = 1;
 
     private PlayerRank playerRank;

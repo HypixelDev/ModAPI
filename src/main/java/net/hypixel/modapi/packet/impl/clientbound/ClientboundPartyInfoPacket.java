@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class ClientboundPartyInfoPacket extends VersionedPacket implements ClientboundHypixelPacket {
+public class ClientboundPartyInfoPacket extends ClientboundVersionedPacket {
     private static final int CURRENT_VERSION = 1;
 
     private boolean inParty;

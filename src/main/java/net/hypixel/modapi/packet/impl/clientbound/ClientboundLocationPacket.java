@@ -3,14 +3,12 @@ package net.hypixel.modapi.packet.impl.clientbound;
 import net.hypixel.data.region.Environment;
 import net.hypixel.data.type.ServerType;
 import net.hypixel.modapi.handler.ClientboundPacketHandler;
-import net.hypixel.modapi.packet.ClientboundHypixelPacket;
-import net.hypixel.modapi.packet.impl.VersionedPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public class ClientboundLocationPacket extends VersionedPacket implements ClientboundHypixelPacket {
+public class ClientboundLocationPacket extends ClientboundVersionedPacket {
     private static final int CURRENT_VERSION = 1;
 
     private Environment environment;
