@@ -14,4 +14,9 @@ public class ServerboundPlayerInfoPacket extends VersionedPacket {
         super(serializer);
     }
 
+    @Override
+    protected int getLatestVersion() {
+        return CURRENT_VERSION;
+    }
+
 }

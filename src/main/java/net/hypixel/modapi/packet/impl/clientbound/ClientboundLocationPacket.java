@@ -13,17 +13,17 @@ import java.util.Optional;
 public class ClientboundLocationPacket extends VersionedPacket implements ClientboundHypixelPacket {
     private static final int CURRENT_VERSION = 1;
 
-    private final Environment environment;
-    private final String proxyName;
-    private final String serverName;
+    private Environment environment;
+    private String proxyName;
+    private String serverName;
     @Nullable
-    private final ServerType serverType;
+    private ServerType serverType;
     @Nullable
-    private final String lobbyName;
+    private String lobbyName;
     @Nullable
-    private final String mode;
+    private String mode;
     @Nullable
-    private final String map;
+    private String map;
 
     public ClientboundLocationPacket(Environment environment, String proxyName, String serverName, @Nullable ServerType serverType, @Nullable String lobbyName, @Nullable String mode, @Nullable String map) {
         super(CURRENT_VERSION);
@@ -38,6 +38,14 @@ public class ClientboundLocationPacket extends VersionedPacket implements Client
 
     public ClientboundLocationPacket(PacketSerializer serializer) {
         super(serializer);
+    }
+
+    @Override
+    protected boolean read(PacketSerializer serializer) {
+        if (!super.read(serializer)) {
+            return false;
+        }
+
         this.environment = Environment.getById(serializer.readVarInt()).orElseThrow(() -> new IllegalArgumentException("Invalid environment ID"));
         this.proxyName = serializer.readString();
         this.serverName = serializer.readString();
@@ -45,6 +53,7 @@ public class ClientboundLocationPacket extends VersionedPacket implements Client
         this.lobbyName = serializer.readOptionally(PacketSerializer::readString);
         this.mode = serializer.readOptionally(PacketSerializer::readString);
         this.map = serializer.readOptionally(PacketSerializer::readString);
+        return true;
     }
 
     @Override
@@ -57,6 +66,11 @@ public class ClientboundLocationPacket extends VersionedPacket implements Client
         serializer.writeOptionally(lobbyName, PacketSerializer::writeString);
         serializer.writeOptionally(mode, PacketSerializer::writeString);
         serializer.writeOptionally(map, PacketSerializer::writeString);
+    }
+
+    @Override
+    protected int getLatestVersion() {
+        return CURRENT_VERSION;
     }
 
     @Override

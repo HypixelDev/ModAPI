@@ -11,9 +11,9 @@ import java.util.*;
 public class ClientboundPartyInfoPacket extends VersionedPacket implements ClientboundHypixelPacket {
     private static final int CURRENT_VERSION = 1;
 
-    private final boolean inParty;
-    private final UUID leader;
-    private final Set<UUID> members;
+    private boolean inParty;
+    private UUID leader;
+    private Set<UUID> members;
 
     public ClientboundPartyInfoPacket(boolean inParty, @Nullable UUID leader, Set<UUID> members) {
         super(CURRENT_VERSION);
@@ -24,12 +24,19 @@ public class ClientboundPartyInfoPacket extends VersionedPacket implements Clien
 
     public ClientboundPartyInfoPacket(PacketSerializer serializer) {
         super(serializer);
+    }
+
+    @Override
+    protected boolean read(PacketSerializer serializer) {
+        if (!super.read(serializer)) {
+            return false;
+        }
 
         this.inParty = serializer.readBoolean();
         if (!inParty) {
             this.leader = null;
             this.members = Collections.emptySet();
-            return;
+            return true;
         }
 
         this.leader = serializer.readUuid();
@@ -39,6 +46,7 @@ public class ClientboundPartyInfoPacket extends VersionedPacket implements Clien
             members.add(serializer.readUuid());
         }
         this.members = Collections.unmodifiableSet(members);
+        return true;
     }
 
     @Override
@@ -54,6 +62,11 @@ public class ClientboundPartyInfoPacket extends VersionedPacket implements Clien
         for (UUID member : members) {
             serializer.writeUuid(member);
         }
+    }
+
+    @Override
+    protected int getLatestVersion() {
+        return CURRENT_VERSION;
     }
 
     @Override

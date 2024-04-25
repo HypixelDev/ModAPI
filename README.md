@@ -7,6 +7,8 @@ At this time the API is in an early preview state to obtain feedback from the co
 
 ## Usage
 
+For using the Mod API it is highly recommended to relocate the package `net.hypixel` to prevent conflicting with other mods and different versions of the Mod API.
+
 You can use this API as a dependency via the public Hypixel maven repo.
 
 #### Hypixel Maven Repo
