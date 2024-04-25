@@ -58,6 +58,7 @@ public class ClientboundPartyInfoPacket extends ClientboundVersionedPacket {
                 return;
             }
 
+            serializer.writeBoolean(true);
             serializer.writeUuid(leader.get());
             Set<UUID> members = getMembers();
             serializer.writeVarInt(members.size());
