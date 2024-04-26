@@ -43,3 +43,6 @@ dependencies {
     implementation 'net.hypixel:mod-api:0.3.1'
 }
 ```
+
+## Example Mod Implementation
+Modern Fabric (1.20,...): https://github.com/ConnorLinfoot/FabricModAPIExample
