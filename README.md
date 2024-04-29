@@ -34,12 +34,12 @@ You can then include the dependency in your project.
 <dependency>
     <groupId>net.hypixel</groupId>
     <artifactId>mod-api</artifactId>
-    <version>0.3.1</version>
+    <version>0.3.2</version>
 </dependency>
 ```
 
 ```gradle
 dependencies {
-    implementation 'net.hypixel:mod-api:0.3.1'
+    implementation 'net.hypixel:mod-api:0.3.2'
 }
 ```
