@@ -2,16 +2,32 @@
 
 The Hypixel Mod API is an implementation of custom packets for communicating with the Hypixel Server via plugin messages.
 
-At this time the API is in an early preview state to obtain feedback from the community. The API is subject to change and may be changed or disabled at any time. You can read more about on the [announcement forum thread](https://hypixel.net/threads/hypixel-mod-api-developer-preview-feedback.5635119/).
+Currently, the API is in an early preview state to gather community feedback. The API is subject to change and may be 
+altered or disabled at any time. You can read more about on 
+the [announcement forum thread](https://hypixel.net/threads/hypixel-mod-api-developer-preview-feedback.5635119/).
 
 
-## Usage
+## Mod Distributions
 
-For using the Mod API it is highly recommended to relocate the package `net.hypixel` to prevent conflicting with other mods and different versions of the Mod API.
+Official downloads of the Hypixel Mod API can be found on [Modrinth](https://modrinth.com/mod/hypixel-mod-api).
+To install the mod, simply download the JAR file and place it in your mods folder. 
 
-You can use this API as a dependency via the public Hypixel maven repo.
+Currently, the Hypixel Mod API supports the following mod loaders and versions:
 
-#### Hypixel Maven Repo
+- Fabric 1.20.5/1.20.6
+
+There are also plans to add support for the following versions before a full release:
+
+- Forge 1.20.6
+- Forge 1.8.9
+
+If there is significant demand, support for additional versions and loaders may be considered.
+
+
+## Developer Usage
+
+For using the Mod API you will need to add it as a dependency to your project. This can be done via the public 
+Hypixel Maven repository.
 
 ```xml
 <repository>
@@ -41,5 +57,45 @@ You can then include the dependency in your project.
 ```gradle
 dependencies {
     implementation 'net.hypixel:mod-api:0.3.2'
+}
+```
+
+Depending on your chosen mod loader, you will need to also include the `hypixel-mod-api` as a required dependency. For example in Fabric you would include the following in your `fabric.mod.json` file.
+
+```json
+{
+  "depends": {
+    "hypixel-mod-api": ">=0.3.2"
+  }
+}
+```
+
+## Example Usage
+
+Once you have the API added to your project you can start using it. Below are examples of sending server-bound packets, as well as receiving client-bound packets.
+
+### Sending a Hypixel Packet
+
+```java
+public class Example {
+    public void sendPacket() {
+        HypixelModAPI.getInstance().sendPacket(new ServerboundLocationPacket());
+    }
+}
+```
+
+### Registering a packet handler
+
+```java
+
+public class Example {
+    public void registerPacketHandler() {
+        HypixelModAPI.getInstance().registerHandler(new ClientboundPacketHandler() {
+            @Override
+            public void onLocationPacket(ClientboundLocationPacket packet) {
+                packet.getServerName();
+            }
+        });
+    }
 }
 ```
