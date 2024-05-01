@@ -18,7 +18,6 @@ Currently, the Hypixel Mod API supports the following mod loaders and versions:
 
 There are also plans to add support for the following versions before a full release:
 
-- Forge 1.20.6
 - Forge 1.8.9
 
 If there is significant demand, support for additional versions and loaders may be considered.
