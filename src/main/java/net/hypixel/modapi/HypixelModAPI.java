@@ -8,7 +8,7 @@ import net.hypixel.modapi.packet.EventPacket;
 import net.hypixel.modapi.packet.HypixelPacket;
 import net.hypixel.modapi.packet.PacketRegistry;
 import net.hypixel.modapi.packet.impl.clientbound.*;
-import net.hypixel.modapi.packet.impl.clientbound.event.ClientboundHelloEventPacket;
+import net.hypixel.modapi.packet.impl.clientbound.event.ClientboundHelloPacket;
 import net.hypixel.modapi.packet.impl.clientbound.event.ClientboundLocationEventPacket;
 import net.hypixel.modapi.packet.impl.serverbound.*;
 import net.hypixel.modapi.serializer.PacketSerializer;
@@ -65,7 +65,7 @@ public class HypixelModAPI {
 
     private void registerEventPackets() {
         registry.define("hyevent:hello")
-                .clientbound(ClientboundHelloEventPacket.class, ClientboundHelloEventPacket::new)
+                .clientbound(ClientboundHelloPacket.class, ClientboundHelloPacket::new)
                 .register();
 
         registry.define("hyevent:location")
@@ -76,7 +76,7 @@ public class HypixelModAPI {
     private void registerDefaultHandler() {
         registerHandler(new ClientboundPacketHandler() {
             @Override
-            public void onHelloEvent(ClientboundHelloEventPacket packet) {
+            public void onHelloEvent(ClientboundHelloPacket packet) {
                 sendRegisterPacket(true);
             }
         });
@@ -91,22 +91,12 @@ public class HypixelModAPI {
     }
 
     public void subscribeToEventPacket(Class<? extends EventPacket> packet) {
-        if (packet.equals(ClientboundHelloEventPacket.class)) {
-            // Hello packet is automatically sent upon joining, no need to subscribe or unsubscribe
-            return;
-        }
-
         if (subscribedEvents.add(getRegistry().getIdentifier(packet))) {
             sendRegisterPacket(false);
         }
     }
 
     public void unsubscribeFromEventPacket(Class<? extends EventPacket> packet) {
-        if (packet.equals(ClientboundHelloEventPacket.class)) {
-            // Hello packet is automatically sent upon joining, no need to subscribe or unsubscribe
-            return;
-        }
-
         if (subscribedEvents.remove(getRegistry().getIdentifier(packet))) {
             sendRegisterPacket(false);
         }
