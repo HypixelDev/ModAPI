@@ -6,7 +6,7 @@
 
     <groupId>net.hypixel</groupId>
     <artifactId>mod-api</artifactId>
-    <version>dev-SNAPSHOT</version>
+    <version>event-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
