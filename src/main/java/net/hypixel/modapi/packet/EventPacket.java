@@ -9,5 +9,5 @@ import net.hypixel.modapi.annotation.Experimental;
  * You will however, need to register that you wish to receive an event driven packet, see {@link net.hypixel.modapi.packet.impl.serverbound.ServerboundRegisterPacket}.
  */
 @Experimental
-public interface EventPacket {
+public interface EventPacket extends ClientboundHypixelPacket {
 }

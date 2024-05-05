@@ -2,7 +2,6 @@ package net.hypixel.modapi.packet.impl.clientbound.event;
 
 import net.hypixel.modapi.annotation.Experimental;
 import net.hypixel.modapi.handler.ClientboundPacketHandler;
-import net.hypixel.modapi.packet.ClientboundHypixelPacket;
 import net.hypixel.modapi.packet.EventPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
 
@@ -12,7 +11,7 @@ import net.hypixel.modapi.serializer.PacketSerializer;
  * As a result of this, the packet contains no version or data to be serialized and is simply a marker.
  */
 @Experimental
-public class ClientboundHelloEventPacket implements ClientboundHypixelPacket, EventPacket {
+public class ClientboundHelloEventPacket implements EventPacket {
 
     public ClientboundHelloEventPacket() {
     }

@@ -6,6 +6,11 @@ import net.hypixel.modapi.serializer.PacketSerializer;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Notifys the remote server what versions of event packets we want to receive.
+ * <p>
+ * You should not use this packet manually, instead, use {@link net.hypixel.modapi.HypixelModAPI#subscribeToEventPacket(Class)} to subscribe to event packets.
+ */
 @Experimental
 public class ServerboundRegisterPacket extends ServerboundVersionedPacket {
     private static final int MAX_IDENTIFIER_LENGTH = 20;

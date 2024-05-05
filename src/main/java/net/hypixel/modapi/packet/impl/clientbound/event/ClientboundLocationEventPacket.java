@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 public class ClientboundLocationEventPacket extends ClientboundVersionedPacket implements EventPacket {
-    private static final int CURRENT_VERSION = 1;
+    public static final int CURRENT_VERSION = 1;
 
     private String serverName;
     @Nullable

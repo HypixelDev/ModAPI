@@ -4,6 +4,7 @@ import net.hypixel.modapi.error.ErrorReason;
 import net.hypixel.modapi.error.ModAPIException;
 import net.hypixel.modapi.handler.ClientboundPacketHandler;
 import net.hypixel.modapi.packet.ClientboundHypixelPacket;
+import net.hypixel.modapi.packet.EventPacket;
 import net.hypixel.modapi.packet.HypixelPacket;
 import net.hypixel.modapi.packet.PacketRegistry;
 import net.hypixel.modapi.packet.impl.clientbound.*;
@@ -13,6 +14,9 @@ import net.hypixel.modapi.packet.impl.serverbound.*;
 import net.hypixel.modapi.serializer.PacketSerializer;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
 
@@ -25,11 +29,13 @@ public class HypixelModAPI {
 
     private final PacketRegistry registry = new PacketRegistry();
     private final List<ClientboundPacketHandler> handlers = new CopyOnWriteArrayList<>();
+    private final Set<String> subscribedEvents = ConcurrentHashMap.newKeySet();
     private Consumer<HypixelPacket> packetSender = null;
 
     private HypixelModAPI() {
         registerHypixelPackets();
         registerEventPackets();
+        registerDefaultHandler();
     }
 
     private void registerHypixelPackets() {
@@ -64,8 +70,17 @@ public class HypixelModAPI {
                 .register();
 
         registry.define("hyevent:location")
-                .clientbound(ClientboundLocationEventPacket.class, ClientboundLocationEventPacket::new)
+                .clientBoundEvent(ClientboundLocationEventPacket.CURRENT_VERSION, ClientboundLocationEventPacket.class, ClientboundLocationEventPacket::new)
                 .register();
+    }
+
+    private void registerDefaultHandler() {
+        registerHandler(new ClientboundPacketHandler() {
+            @Override
+            public void onHelloEvent(ClientboundHelloEventPacket packet) {
+                sendRegisterPacket();
+            }
+        });
     }
 
     public PacketRegistry getRegistry() {
@@ -74,6 +89,33 @@ public class HypixelModAPI {
 
     public void registerHandler(ClientboundPacketHandler handler) {
         handlers.add(handler);
+    }
+
+    public void subscribeToEventPacket(Class<? extends EventPacket> packet) {
+        if (packet.equals(ClientboundHelloEventPacket.class)) {
+            // Hello packet is automatically sent upon joining, no need to subscribe or unsubscribe
+            return;
+        }
+
+        if (subscribedEvents.add(getRegistry().getIdentifier(packet))) {
+            sendRegisterPacket();
+        }
+    }
+
+    public void unsubscribeFromEventPacket(Class<? extends EventPacket> packet) {
+        if (packet.equals(ClientboundHelloEventPacket.class)) {
+            // Hello packet is automatically sent upon joining, no need to subscribe or unsubscribe
+            return;
+        }
+
+        if (subscribedEvents.remove(getRegistry().getIdentifier(packet))) {
+            sendRegisterPacket();
+        }
+    }
+
+    private void sendRegisterPacket() {
+        Map<String, Integer> versionsMap = getRegistry().getEventVersions(subscribedEvents);
+        sendPacket(new ServerboundRegisterPacket(versionsMap));
     }
 
     public void handle(String identifier, PacketSerializer serializer) {
