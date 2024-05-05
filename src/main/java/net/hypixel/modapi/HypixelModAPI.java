@@ -8,7 +8,7 @@ import net.hypixel.modapi.packet.EventPacket;
 import net.hypixel.modapi.packet.HypixelPacket;
 import net.hypixel.modapi.packet.PacketRegistry;
 import net.hypixel.modapi.packet.impl.clientbound.*;
-import net.hypixel.modapi.packet.impl.clientbound.event.ClientboundHelloPacket;
+import net.hypixel.modapi.packet.impl.clientbound.ClientboundHelloPacket;
 import net.hypixel.modapi.packet.impl.clientbound.event.ClientboundLocationEventPacket;
 import net.hypixel.modapi.packet.impl.serverbound.*;
 import net.hypixel.modapi.serializer.PacketSerializer;

@@ -4,7 +4,7 @@ import net.hypixel.modapi.packet.impl.clientbound.ClientboundLocationPacket;
 import net.hypixel.modapi.packet.impl.clientbound.ClientboundPartyInfoPacket;
 import net.hypixel.modapi.packet.impl.clientbound.ClientboundPingPacket;
 import net.hypixel.modapi.packet.impl.clientbound.ClientboundPlayerInfoPacket;
-import net.hypixel.modapi.packet.impl.clientbound.event.ClientboundHelloPacket;
+import net.hypixel.modapi.packet.impl.clientbound.ClientboundHelloPacket;
 import net.hypixel.modapi.packet.impl.clientbound.event.ClientboundLocationEventPacket;
 
 public interface ClientboundPacketHandler {

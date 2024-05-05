@@ -1,4 +1,4 @@
-package net.hypixel.modapi.packet.impl.clientbound.event;
+package net.hypixel.modapi.packet.impl.clientbound;
 
 import net.hypixel.modapi.annotation.Experimental;
 import net.hypixel.modapi.handler.ClientboundPacketHandler;
