@@ -52,10 +52,10 @@ public class HypixelModAPI {
                 .serverbound(ServerboundRegisterPacket.class, ServerboundRegisterPacket::new)
                 .register();
 
-        registry.define("hevent:hello")
+        registry.define("hyevent:hello")
                 .clientbound(ClientboundHelloEventPacket.class, ClientboundHelloEventPacket::new)
                 .register();
-        registry.define("hevent:location")
+        registry.define("hyevent:location")
                 .clientbound(ClientboundLocationEventPacket.class, ClientboundLocationEventPacket::new)
                 .register();
     }
