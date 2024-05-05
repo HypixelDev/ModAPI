@@ -13,12 +13,10 @@ import net.hypixel.modapi.packet.impl.clientbound.event.ClientboundLocationEvent
 import net.hypixel.modapi.packet.impl.serverbound.*;
 import net.hypixel.modapi.serializer.PacketSerializer;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class HypixelModAPI {
     private static final HypixelModAPI INSTANCE = new HypixelModAPI();
@@ -30,7 +28,8 @@ public class HypixelModAPI {
     private final PacketRegistry registry = new PacketRegistry();
     private final List<ClientboundPacketHandler> handlers = new CopyOnWriteArrayList<>();
     private final Set<String> subscribedEvents = ConcurrentHashMap.newKeySet();
-    private Consumer<HypixelPacket> packetSender = null;
+    private Set<String> lastSubscribedEvents = Collections.emptySet();
+    private Predicate<HypixelPacket> packetSender = null;
 
     private HypixelModAPI() {
         registerHypixelPackets();
@@ -114,8 +113,15 @@ public class HypixelModAPI {
     }
 
     private void sendRegisterPacket() {
-        Map<String, Integer> versionsMap = getRegistry().getEventVersions(subscribedEvents);
-        sendPacket(new ServerboundRegisterPacket(versionsMap));
+        if (lastSubscribedEvents.equals(subscribedEvents)) {
+            return;
+        }
+
+        Set<String> lastSubscribedEvents = new HashSet<>(subscribedEvents);
+        Map<String, Integer> versionsMap = getRegistry().getEventVersions(lastSubscribedEvents);
+        if (sendPacket(new ServerboundRegisterPacket(versionsMap))) {
+            this.lastSubscribedEvents = lastSubscribedEvents;
+        }
     }
 
     public void handle(String identifier, PacketSerializer serializer) {
@@ -148,17 +154,21 @@ public class HypixelModAPI {
         }
     }
 
-    public void setPacketSender(Consumer<HypixelPacket> packetSender) {
+    public void setPacketSender(Predicate<HypixelPacket> packetSender) {
         if (this.packetSender != null) {
             throw new IllegalArgumentException("Packet sender already set");
         }
         this.packetSender = packetSender;
     }
 
-    public void sendPacket(HypixelPacket packet) {
+    /**
+     * @return whether the packet was sent successfully
+     */
+    public boolean sendPacket(HypixelPacket packet) {
         if (packetSender == null) {
             throw new IllegalStateException("Packet sender not set");
         }
-        packetSender.accept(packet);
+
+        return packetSender.test(packet);
     }
 }

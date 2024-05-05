@@ -3,6 +3,7 @@ package net.hypixel.modapi.packet.impl.serverbound;
 import net.hypixel.modapi.annotation.Experimental;
 import net.hypixel.modapi.serializer.PacketSerializer;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,17 +18,13 @@ public class ServerboundRegisterPacket extends ServerboundVersionedPacket {
     private static final int MAX_IDENTIFIERS = 5;
     private static final int CURRENT_VERSION = 1;
 
-    private Map<String, Integer> wantedPackets;
+    private Map<String, Integer> wanted;
 
-    public ServerboundRegisterPacket(Map<String, Integer> wantedPackets) {
+    public ServerboundRegisterPacket(Map<String, Integer> wanted) {
         super(CURRENT_VERSION);
-        this.wantedPackets = wantedPackets;
+        this.wanted = wanted;
 
-        if (wantedPackets.isEmpty()) {
-            throw new IllegalArgumentException("wantedPackets cannot be empty");
-        }
-
-        if (wantedPackets.size() > MAX_IDENTIFIERS) {
+        if (wanted.size() > MAX_IDENTIFIERS) {
             throw new IllegalArgumentException("wantedPackets cannot contain more than " + MAX_IDENTIFIERS + " identifiers");
         }
     }
@@ -45,9 +42,9 @@ public class ServerboundRegisterPacket extends ServerboundVersionedPacket {
             throw new IllegalArgumentException("wantedPackets cannot contain more than " + MAX_IDENTIFIERS + " identifiers");
         }
 
-        this.wantedPackets = new HashMap<>(size);
+        this.wanted = new HashMap<>(size);
         for (int i = 0; i < size; i++) {
-            wantedPackets.put(serializer.readString(MAX_IDENTIFIER_LENGTH), serializer.readVarInt());
+            wanted.put(serializer.readString(MAX_IDENTIFIER_LENGTH), serializer.readVarInt());
         }
 
         return true;
@@ -57,10 +54,21 @@ public class ServerboundRegisterPacket extends ServerboundVersionedPacket {
     public void write(PacketSerializer serializer) {
         super.write(serializer);
 
-        serializer.writeVarInt(wantedPackets.size());
-        for (Map.Entry<String, Integer> entry : wantedPackets.entrySet()) {
+        serializer.writeVarInt(wanted.size());
+        for (Map.Entry<String, Integer> entry : wanted.entrySet()) {
             serializer.writeString(entry.getKey(), MAX_IDENTIFIER_LENGTH);
             serializer.writeVarInt(entry.getValue());
         }
+    }
+
+    public Map<String, Integer> getWanted() {
+        return Collections.unmodifiableMap(wanted);
+    }
+
+    @Override
+    public String toString() {
+        return "ServerboundRegisterPacket{" +
+                "wantedPackets=" + wanted +
+                "} " + super.toString();
     }
 }

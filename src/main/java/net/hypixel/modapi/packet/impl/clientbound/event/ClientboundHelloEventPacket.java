@@ -26,6 +26,10 @@ public class ClientboundHelloEventPacket implements EventPacket {
 
     @Override
     public void write(PacketSerializer serializer) {
+    }
 
+    @Override
+    public String toString() {
+        return "ClientboundHelloEventPacket{}";
     }
 }
