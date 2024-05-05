@@ -77,7 +77,7 @@ public class HypixelModAPI {
         registerHandler(new ClientboundPacketHandler() {
             @Override
             public void onHelloEvent(ClientboundHelloEventPacket packet) {
-                sendRegisterPacket();
+                sendRegisterPacket(true);
             }
         });
     }
@@ -97,7 +97,7 @@ public class HypixelModAPI {
         }
 
         if (subscribedEvents.add(getRegistry().getIdentifier(packet))) {
-            sendRegisterPacket();
+            sendRegisterPacket(false);
         }
     }
 
@@ -108,12 +108,12 @@ public class HypixelModAPI {
         }
 
         if (subscribedEvents.remove(getRegistry().getIdentifier(packet))) {
-            sendRegisterPacket();
+            sendRegisterPacket(false);
         }
     }
 
-    private void sendRegisterPacket() {
-        if (lastSubscribedEvents.equals(subscribedEvents)) {
+    private void sendRegisterPacket(boolean alwaysSendIfNotEmpty) {
+        if (lastSubscribedEvents.equals(subscribedEvents) && !(alwaysSendIfNotEmpty && !subscribedEvents.isEmpty())) {
             return;
         }
 
