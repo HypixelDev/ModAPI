@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class PacketRegistry {
 
@@ -43,10 +44,6 @@ public class PacketRegistry {
         return registrations.values();
     }
 
-    public boolean isRegistered(String identifier) {
-        return registrations.containsKey(identifier);
-    }
-
     public ClientboundHypixelPacket createClientboundPacket(String identifier, PacketSerializer serializer) {
         return getRegistration(identifier).clientPacketFactory.apply(serializer);
     }
@@ -55,12 +52,42 @@ public class PacketRegistry {
         return getRegistration(identifier).serverPacketFactory.apply(serializer);
     }
 
+    /**
+     * @return whether a packet with the given identifier is registered, either for clientbound or serverbound
+     */
+    public boolean isRegistered(String identifier) {
+        return registrations.containsKey(identifier);
+    }
+
     public String getIdentifier(Class<? extends HypixelPacket> clazz) {
         return classToIdentifier.get(clazz);
     }
 
+    /**
+     * @return all registered packet identifiers, this will include both clientbound and serverbound packets
+     */
     public Set<String> getIdentifiers() {
         return Collections.unmodifiableSet(registrations.keySet());
+    }
+
+    /**
+     * @return all registered clientbound packet identifiers
+     */
+    public Set<String> getClientboundIdentifiers() {
+        return Collections.unmodifiableSet(registrations.values().stream()
+                .filter(registration -> registration.getClientboundClazz() != null)
+                .map(registration -> classToIdentifier.get(registration.getClientboundClazz()))
+                .collect(Collectors.toSet()));
+    }
+
+    /**
+     * @return all registered serverbound packet identifiers
+     */
+    public Set<String> getServerboundIdentifiers() {
+        return Collections.unmodifiableSet(registrations.values().stream()
+                .filter(registration -> registration.getServerboundClazz() != null)
+                .map(registration -> classToIdentifier.get(registration.getServerboundClazz()))
+                .collect(Collectors.toSet()));
     }
 
     public static final class RegistrationBuilder {
