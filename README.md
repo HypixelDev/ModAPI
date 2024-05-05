@@ -14,7 +14,7 @@ To install the mod, simply download the JAR file and place it in your mods folde
 
 Currently, the Hypixel Mod API supports the following mod loaders and versions:
 
-- Fabric 1.20.5/1.20.6
+- [Fabric Latest](https://github.com/HypixelDev/FabricModAPI)
 
 There are also plans to add support for the following versions before a full release:
 
@@ -49,13 +49,13 @@ You can then include the dependency in your project.
 <dependency>
     <groupId>net.hypixel</groupId>
     <artifactId>mod-api</artifactId>
-    <version>0.3.2</version>
+    <version>0.3.3</version>
 </dependency>
 ```
 
 ```gradle
 dependencies {
-    implementation 'net.hypixel:mod-api:0.3.2'
+    implementation 'net.hypixel:mod-api:0.3.3'
 }
 ```
 
@@ -64,7 +64,7 @@ Depending on your chosen mod loader, you will need to also include the `hypixel-
 ```json
 {
   "depends": {
-    "hypixel-mod-api": ">=0.3.2"
+    "hypixel-mod-api": ">=0.3.3"
   }
 }
 ```
