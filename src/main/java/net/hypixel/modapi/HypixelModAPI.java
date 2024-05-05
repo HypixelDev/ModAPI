@@ -28,6 +28,11 @@ public class HypixelModAPI {
     private Consumer<HypixelPacket> packetSender = null;
 
     private HypixelModAPI() {
+        registerHypixelPackets();
+        registerEventPackets();
+    }
+
+    private void registerHypixelPackets() {
         registry.define("hypixel:ping")
                 .clientbound(ClientboundPingPacket.class, ClientboundPingPacket::new)
                 .serverbound(ServerboundPingPacket.class, ServerboundPingPacket::new)
@@ -51,10 +56,13 @@ public class HypixelModAPI {
         registry.define("hypixel:register")
                 .serverbound(ServerboundRegisterPacket.class, ServerboundRegisterPacket::new)
                 .register();
+    }
 
+    private void registerEventPackets() {
         registry.define("hyevent:hello")
                 .clientbound(ClientboundHelloEventPacket.class, ClientboundHelloEventPacket::new)
                 .register();
+
         registry.define("hyevent:location")
                 .clientbound(ClientboundLocationEventPacket.class, ClientboundLocationEventPacket::new)
                 .register();
