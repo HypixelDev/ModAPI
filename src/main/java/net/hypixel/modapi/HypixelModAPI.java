@@ -4,6 +4,7 @@ import net.hypixel.modapi.error.ErrorReason;
 import net.hypixel.modapi.error.ModAPIException;
 import net.hypixel.modapi.handler.ClientboundPacketHandler;
 import net.hypixel.modapi.packet.ClientboundHypixelPacket;
+import net.hypixel.modapi.packet.HypixelPacket;
 import net.hypixel.modapi.packet.PacketRegistry;
 import net.hypixel.modapi.packet.impl.clientbound.*;
 import net.hypixel.modapi.packet.impl.clientbound.event.ClientboundHelloEventPacket;
@@ -13,6 +14,7 @@ import net.hypixel.modapi.serializer.PacketSerializer;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Consumer;
 
 public class HypixelModAPI {
     private static final HypixelModAPI INSTANCE = new HypixelModAPI();
@@ -23,6 +25,7 @@ public class HypixelModAPI {
 
     private final PacketRegistry registry = new PacketRegistry();
     private final List<ClientboundPacketHandler> handlers = new CopyOnWriteArrayList<>();
+    private Consumer<HypixelPacket> packetSender = null;
 
     private HypixelModAPI() {
         registry.define("hypixel:ping")
@@ -86,9 +89,26 @@ public class HypixelModAPI {
             return;
         }
 
+        handle(packet);
+    }
+
+    public void handle(ClientboundHypixelPacket packet) {
         for (ClientboundPacketHandler handler : handlers) {
             packet.handle(handler);
         }
     }
 
+    public void setPacketSender(Consumer<HypixelPacket> packetSender) {
+        if (this.packetSender != null) {
+            throw new IllegalArgumentException("Packet sender already set");
+        }
+        this.packetSender = packetSender;
+    }
+
+    public void sendPacket(HypixelPacket packet) {
+        if (packetSender == null) {
+            throw new IllegalStateException("Packet sender not set");
+        }
+        packetSender.accept(packet);
+    }
 }
