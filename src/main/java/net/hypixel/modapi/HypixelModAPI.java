@@ -47,11 +47,6 @@ public class HypixelModAPI {
                 .serverbound(ServerboundPingPacket.class, ServerboundPingPacket::new)
                 .register();
 
-        registry.define("hypixel:location")
-                .clientbound(ClientboundLocationPacket.class, ClientboundLocationPacket::new)
-                .serverbound(ServerboundLocationPacket.class, ServerboundLocationPacket::new)
-                .register();
-
         registry.define("hypixel:party_info")
                 .clientbound(ClientboundPartyInfoPacket.class, ClientboundPartyInfoPacket::new)
                 .serverbound(ServerboundPartyInfoPacket.class, ServerboundPartyInfoPacket::new)
