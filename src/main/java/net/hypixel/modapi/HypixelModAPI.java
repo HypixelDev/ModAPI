@@ -96,12 +96,6 @@ public class HypixelModAPI {
         }
     }
 
-    public void unsubscribeFromEventPacket(Class<? extends EventPacket> packet) {
-        if (subscribedEvents.remove(getRegistry().getIdentifier(packet))) {
-            sendRegisterPacket(false);
-        }
-    }
-
     private void sendRegisterPacket(boolean alwaysSendIfNotEmpty) {
         if (lastSubscribedEvents.equals(subscribedEvents) && !(alwaysSendIfNotEmpty && !subscribedEvents.isEmpty())) {
             return;
