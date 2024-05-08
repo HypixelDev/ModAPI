@@ -160,4 +160,7 @@ public class PacketSerializer {
         return this;
     }
 
+    public void discardRemaining() {
+        this.buf.readerIndex(this.buf.writerIndex());
+    }
 }
