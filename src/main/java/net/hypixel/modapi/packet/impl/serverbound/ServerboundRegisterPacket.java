@@ -18,13 +18,13 @@ public class ServerboundRegisterPacket extends ServerboundVersionedPacket {
     private static final int MAX_IDENTIFIERS = 5;
     private static final int CURRENT_VERSION = 1;
 
-    private Map<String, Integer> wanted;
+    private Map<String, Integer> subscribedEvents;
 
-    public ServerboundRegisterPacket(Map<String, Integer> wanted) {
+    public ServerboundRegisterPacket(Map<String, Integer> subscribedEvents) {
         super(CURRENT_VERSION);
-        this.wanted = wanted;
+        this.subscribedEvents = subscribedEvents;
 
-        if (wanted.size() > MAX_IDENTIFIERS) {
+        if (subscribedEvents.size() > MAX_IDENTIFIERS) {
             throw new IllegalArgumentException("wantedPackets cannot contain more than " + MAX_IDENTIFIERS + " identifiers");
         }
     }
@@ -42,9 +42,9 @@ public class ServerboundRegisterPacket extends ServerboundVersionedPacket {
             throw new IllegalArgumentException("wantedPackets cannot contain more than " + MAX_IDENTIFIERS + " identifiers");
         }
 
-        this.wanted = new HashMap<>(size);
+        this.subscribedEvents = new HashMap<>(size);
         for (int i = 0; i < size; i++) {
-            wanted.put(serializer.readString(MAX_IDENTIFIER_LENGTH), serializer.readVarInt());
+            subscribedEvents.put(serializer.readString(MAX_IDENTIFIER_LENGTH), serializer.readVarInt());
         }
 
         return true;
@@ -54,21 +54,21 @@ public class ServerboundRegisterPacket extends ServerboundVersionedPacket {
     public void write(PacketSerializer serializer) {
         super.write(serializer);
 
-        serializer.writeVarInt(wanted.size());
-        for (Map.Entry<String, Integer> entry : wanted.entrySet()) {
+        serializer.writeVarInt(subscribedEvents.size());
+        for (Map.Entry<String, Integer> entry : subscribedEvents.entrySet()) {
             serializer.writeString(entry.getKey(), MAX_IDENTIFIER_LENGTH);
             serializer.writeVarInt(entry.getValue());
         }
     }
 
-    public Map<String, Integer> getWanted() {
-        return Collections.unmodifiableMap(wanted);
+    public Map<String, Integer> getSubscribedEvents() {
+        return Collections.unmodifiableMap(subscribedEvents);
     }
 
     @Override
     public String toString() {
         return "ServerboundRegisterPacket{" +
-                "wantedPackets=" + wanted +
+                "wantedPackets=" + subscribedEvents +
                 "} " + super.toString();
     }
 }
