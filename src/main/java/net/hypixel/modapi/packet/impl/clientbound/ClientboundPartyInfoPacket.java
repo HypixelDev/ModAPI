@@ -1,25 +1,24 @@
 package net.hypixel.modapi.packet.impl.clientbound;
 
 import net.hypixel.modapi.handler.ClientboundPacketHandler;
-import net.hypixel.modapi.packet.ClientboundHypixelPacket;
-import net.hypixel.modapi.packet.impl.VersionedPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 public class ClientboundPartyInfoPacket extends ClientboundVersionedPacket {
-    private static final int CURRENT_VERSION = 1;
+    private static final int CURRENT_VERSION = 2;
 
     private boolean inParty;
-    private UUID leader;
-    private Set<UUID> members;
+    private Map<UUID, PartyMember> memberMap;
 
-    public ClientboundPartyInfoPacket(boolean inParty, @Nullable UUID leader, Set<UUID> members) {
-        super(CURRENT_VERSION);
+    public ClientboundPartyInfoPacket(int version, boolean inParty, Map<UUID, PartyMember> memberMap) {
+        super(version);
+        if (version > CURRENT_VERSION) {
+            throw new IllegalArgumentException("Version " + version + " is greater than the current version " + CURRENT_VERSION);
+        }
+
         this.inParty = inParty;
-        this.leader = leader;
-        this.members = members;
+        this.memberMap = memberMap;
     }
 
     public ClientboundPartyInfoPacket(PacketSerializer serializer) {
@@ -34,33 +33,49 @@ public class ClientboundPartyInfoPacket extends ClientboundVersionedPacket {
 
         this.inParty = serializer.readBoolean();
         if (!inParty) {
-            this.leader = null;
-            this.members = Collections.emptySet();
+            this.memberMap = Collections.emptyMap();
             return true;
         }
 
-        this.leader = serializer.readUuid();
         int memberCount = serializer.readVarInt();
-        Set<UUID> members = new HashSet<>(memberCount);
+        Map<UUID, PartyMember> memberMap = new HashMap<>(memberCount);
         for (int i = 0; i < memberCount; i++) {
-            members.add(serializer.readUuid());
+            PartyMember member = new PartyMember(serializer);
+            memberMap.put(member.getUuid(), member);
         }
-        this.members = Collections.unmodifiableSet(members);
+        this.memberMap = Collections.unmodifiableMap(memberMap);
         return true;
     }
 
     @Override
     public void write(PacketSerializer serializer) {
         super.write(serializer);
+
+        if (version == 1) {
+            Optional<UUID> leader = getLeader();
+            if (!leader.isPresent()) {
+                serializer.writeBoolean(false);
+                return;
+            }
+
+            serializer.writeBoolean(true);
+            serializer.writeUuid(leader.get());
+            Set<UUID> members = getMembers();
+            serializer.writeVarInt(members.size());
+            for (UUID member : members) {
+                serializer.writeUuid(member);
+            }
+            return;
+        }
+
         serializer.writeBoolean(inParty);
         if (!inParty) {
             return;
         }
 
-        serializer.writeUuid(leader);
-        serializer.writeVarInt(members.size());
-        for (UUID member : members) {
-            serializer.writeUuid(member);
+        serializer.writeVarInt(memberMap.size());
+        for (PartyMember member : memberMap.values()) {
+            member.write(serializer);
         }
     }
 
@@ -79,19 +94,73 @@ public class ClientboundPartyInfoPacket extends ClientboundVersionedPacket {
     }
 
     public Optional<UUID> getLeader() {
-        return Optional.ofNullable(leader);
+        if (!inParty) {
+            return Optional.empty();
+        }
+        return memberMap.values().stream()
+                .filter(member -> member.getRole() == PartyRole.LEADER)
+                .map(PartyMember::getUuid)
+                .findFirst();
     }
 
     public Set<UUID> getMembers() {
-        return members;
+        return memberMap.keySet();
+    }
+
+    public Map<UUID, PartyMember> getMemberMap() {
+        return memberMap;
     }
 
     @Override
     public String toString() {
         return "ClientboundPartyInfoPacket{" +
                 "inParty=" + inParty +
-                ", leader=" + leader +
-                ", members=" + members +
+                ", memberMap=" + memberMap +
                 "} " + super.toString();
+    }
+
+    public static class PartyMember {
+        private final UUID uuid;
+        private final PartyRole role;
+
+        public PartyMember(UUID uuid, PartyRole role) {
+            this.uuid = uuid;
+            this.role = role;
+        }
+
+        PartyMember(PacketSerializer serializer) {
+            this.uuid = serializer.readUuid();
+            this.role = PartyRole.VALUES[serializer.readVarInt()];
+        }
+
+        void write(PacketSerializer serializer) {
+            serializer.writeUuid(uuid);
+            serializer.writeVarInt(role.ordinal());
+        }
+
+        public UUID getUuid() {
+            return uuid;
+        }
+
+        public PartyRole getRole() {
+            return role;
+        }
+
+        @Override
+        public String toString() {
+            return "PartyMember{" +
+                    "uuid=" + uuid +
+                    ", role=" + role +
+                    '}';
+        }
+    }
+
+    public enum PartyRole {
+        LEADER,
+        MOD,
+        MEMBER,
+        ;
+
+        private static final PartyRole[] VALUES = values();
     }
 }
