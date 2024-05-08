@@ -9,7 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public class ClientboundLocationEventPacket extends ClientboundVersionedPacket implements EventPacket {
+public class ClientboundLocationPacket extends ClientboundVersionedPacket implements EventPacket {
     public static final int CURRENT_VERSION = 1;
 
     private String serverName;
@@ -22,7 +22,7 @@ public class ClientboundLocationEventPacket extends ClientboundVersionedPacket i
     @Nullable
     private String map;
 
-    public ClientboundLocationEventPacket(String serverName, @Nullable ServerType serverType, @Nullable String lobbyName, @Nullable String mode, @Nullable String map) {
+    public ClientboundLocationPacket(String serverName, @Nullable ServerType serverType, @Nullable String lobbyName, @Nullable String mode, @Nullable String map) {
         super(CURRENT_VERSION);
         this.serverName = serverName;
         this.serverType = serverType;
@@ -31,7 +31,7 @@ public class ClientboundLocationEventPacket extends ClientboundVersionedPacket i
         this.map = map;
     }
 
-    public ClientboundLocationEventPacket(PacketSerializer serializer) {
+    public ClientboundLocationPacket(PacketSerializer serializer) {
         super(serializer);
     }
 

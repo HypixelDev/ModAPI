@@ -9,7 +9,7 @@ import net.hypixel.modapi.packet.HypixelPacket;
 import net.hypixel.modapi.packet.PacketRegistry;
 import net.hypixel.modapi.packet.impl.clientbound.*;
 import net.hypixel.modapi.packet.impl.clientbound.ClientboundHelloPacket;
-import net.hypixel.modapi.packet.impl.clientbound.event.ClientboundLocationEventPacket;
+import net.hypixel.modapi.packet.impl.clientbound.event.ClientboundLocationPacket;
 import net.hypixel.modapi.packet.impl.serverbound.*;
 import net.hypixel.modapi.serializer.PacketSerializer;
 
@@ -64,7 +64,7 @@ public class HypixelModAPI {
 
     private void registerEventPackets() {
         registry.define("hyevent:location")
-                .clientBoundEvent(ClientboundLocationEventPacket.CURRENT_VERSION, ClientboundLocationEventPacket.class, ClientboundLocationEventPacket::new)
+                .clientBoundEvent(ClientboundLocationPacket.CURRENT_VERSION, ClientboundLocationPacket.class, ClientboundLocationPacket::new)
                 .register();
     }
 
