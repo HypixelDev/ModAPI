@@ -8,9 +8,11 @@ import net.hypixel.modapi.packet.EventPacket;
 import net.hypixel.modapi.packet.HypixelPacket;
 import net.hypixel.modapi.packet.PacketRegistry;
 import net.hypixel.modapi.packet.impl.clientbound.*;
-import net.hypixel.modapi.packet.impl.clientbound.ClientboundHelloPacket;
 import net.hypixel.modapi.packet.impl.clientbound.event.ClientboundLocationPacket;
-import net.hypixel.modapi.packet.impl.serverbound.*;
+import net.hypixel.modapi.packet.impl.serverbound.ServerboundPartyInfoPacket;
+import net.hypixel.modapi.packet.impl.serverbound.ServerboundPingPacket;
+import net.hypixel.modapi.packet.impl.serverbound.ServerboundPlayerInfoPacket;
+import net.hypixel.modapi.packet.impl.serverbound.ServerboundRegisterPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
 
 import java.util.*;
@@ -92,6 +94,11 @@ public class HypixelModAPI {
     }
 
     private void sendRegisterPacket(boolean alwaysSendIfNotEmpty) {
+        if (packetSender == null) {
+            // Allow registering events before the mod has fully initialized
+            return;
+        }
+
         if (lastSubscribedEvents.equals(subscribedEvents) && !(alwaysSendIfNotEmpty && !subscribedEvents.isEmpty())) {
             return;
         }
