@@ -1,6 +1,5 @@
 package net.hypixel.modapi.packet.impl.serverbound;
 
-import net.hypixel.modapi.annotation.Experimental;
 import net.hypixel.modapi.serializer.PacketSerializer;
 
 import java.util.Collections;
@@ -12,7 +11,6 @@ import java.util.Map;
  * <p>
  * You should not use this packet manually, instead, use {@link net.hypixel.modapi.HypixelModAPI#subscribeToEventPacket(Class)} to subscribe to event packets.
  */
-@Experimental
 public class ServerboundRegisterPacket extends ServerboundVersionedPacket {
     private static final int MAX_IDENTIFIER_LENGTH = 20;
     private static final int MAX_IDENTIFIERS = 5;

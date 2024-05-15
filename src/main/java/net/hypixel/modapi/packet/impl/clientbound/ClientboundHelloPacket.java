@@ -10,7 +10,6 @@ import net.hypixel.modapi.serializer.PacketSerializer;
  * This packet is automatically sent on every join to Hypixel to indicate that the client has connected to a Hypixel server.
  * Due to the nature of this packet, it is implemented without versioning and designed to discard extra bytes in the case that more data is added in the future.
  */
-@Experimental
 public class ClientboundHelloPacket implements ClientboundHypixelPacket {
     private final Environment environment;
 
