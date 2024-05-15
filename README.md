@@ -15,10 +15,7 @@ To install the mod, simply download the JAR file and place it in your mods folde
 Currently, the Hypixel Mod API supports the following mod loaders and versions:
 
 - [Fabric Latest](https://github.com/HypixelDev/FabricModAPI)
-
-There are also plans to add support for the following versions before a full release:
-
-- Forge 1.8.9
+- [Forge 1.8.9](https://github.com/HypixelDev/ForgeModAPI)
 
 If there is significant demand, support for additional versions and loaders may be considered.
 
