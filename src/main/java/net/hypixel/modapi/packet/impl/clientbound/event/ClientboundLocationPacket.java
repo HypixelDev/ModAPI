@@ -1,18 +1,17 @@
-package net.hypixel.modapi.packet.impl.clientbound;
+package net.hypixel.modapi.packet.impl.clientbound.event;
 
-import net.hypixel.data.region.Environment;
 import net.hypixel.data.type.ServerType;
 import net.hypixel.modapi.handler.ClientboundPacketHandler;
+import net.hypixel.modapi.packet.EventPacket;
+import net.hypixel.modapi.packet.impl.clientbound.ClientboundVersionedPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public class ClientboundLocationPacket extends ClientboundVersionedPacket {
-    private static final int CURRENT_VERSION = 1;
+public class ClientboundLocationPacket extends ClientboundVersionedPacket implements EventPacket {
+    public static final int CURRENT_VERSION = 1;
 
-    private Environment environment;
-    private String proxyName;
     private String serverName;
     @Nullable
     private ServerType serverType;
@@ -23,10 +22,8 @@ public class ClientboundLocationPacket extends ClientboundVersionedPacket {
     @Nullable
     private String map;
 
-    public ClientboundLocationPacket(Environment environment, String proxyName, String serverName, @Nullable ServerType serverType, @Nullable String lobbyName, @Nullable String mode, @Nullable String map) {
+    public ClientboundLocationPacket(String serverName, @Nullable ServerType serverType, @Nullable String lobbyName, @Nullable String mode, @Nullable String map) {
         super(CURRENT_VERSION);
-        this.environment = environment;
-        this.proxyName = proxyName;
         this.serverName = serverName;
         this.serverType = serverType;
         this.lobbyName = lobbyName;
@@ -44,8 +41,6 @@ public class ClientboundLocationPacket extends ClientboundVersionedPacket {
             return false;
         }
 
-        this.environment = Environment.getById(serializer.readVarInt()).orElseThrow(() -> new IllegalArgumentException("Invalid environment ID"));
-        this.proxyName = serializer.readString();
         this.serverName = serializer.readString();
         this.serverType = serializer.readOptional(PacketSerializer::readString).flatMap(ServerType::valueOf).orElse(null);
         this.lobbyName = serializer.readOptionally(PacketSerializer::readString);
@@ -57,8 +52,6 @@ public class ClientboundLocationPacket extends ClientboundVersionedPacket {
     @Override
     public void write(PacketSerializer serializer) {
         super.write(serializer);
-        serializer.writeVarInt(environment.ordinal());
-        serializer.writeString(proxyName);
         serializer.writeString(serverName);
         serializer.writeOptionally(serverType, (s, t) -> s.writeString(t.name()));
         serializer.writeOptionally(lobbyName, PacketSerializer::writeString);
@@ -73,15 +66,7 @@ public class ClientboundLocationPacket extends ClientboundVersionedPacket {
 
     @Override
     public void handle(ClientboundPacketHandler handler) {
-        handler.onLocationPacket(this);
-    }
-
-    public Environment getEnvironment() {
-        return environment;
-    }
-
-    public String getProxyName() {
-        return proxyName;
+        handler.onLocationEvent(this);
     }
 
     public String getServerName() {
@@ -106,10 +91,8 @@ public class ClientboundLocationPacket extends ClientboundVersionedPacket {
 
     @Override
     public String toString() {
-        return "ClientboundLocationPacket{" +
-                "environment=" + environment +
-                ", proxyName='" + proxyName + '\'' +
-                ", serverName='" + serverName + '\'' +
+        return "ClientboundLocationEventPacket{" +
+                "serverName='" + serverName + '\'' +
                 ", serverType='" + serverType + '\'' +
                 ", lobbyName='" + lobbyName + '\'' +
                 ", mode='" + mode + '\'' +

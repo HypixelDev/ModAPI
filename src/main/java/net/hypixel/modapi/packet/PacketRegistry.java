@@ -17,9 +17,10 @@ public class PacketRegistry {
 
     private void register(
             String identifier,
+            int version,
             Class<? extends ClientboundHypixelPacket> clientboundClazz, Function<PacketSerializer, ? extends ClientboundHypixelPacket> clientPacketFactory,
             Class<? extends HypixelPacket> serverboundClazz, Function<PacketSerializer, ? extends HypixelPacket> serverPacketFactory) {
-        registrations.put(identifier, new Registration(clientboundClazz, clientPacketFactory, serverboundClazz, serverPacketFactory));
+        registrations.put(identifier, new Registration(version, clientboundClazz, clientPacketFactory, serverboundClazz, serverPacketFactory));
         if (clientboundClazz != null) {
             classToIdentifier.put(clientboundClazz, identifier);
         }
@@ -90,6 +91,17 @@ public class PacketRegistry {
                 .collect(Collectors.toSet()));
     }
 
+    /**
+     * @param wantedEventIdentifiers the identifiers of the event packets we want to get versions for
+     * @return a map of the event identifiers to their versions, only includes event packets that are registered as event packets with known versions
+     */
+    public Map<String, Integer> getEventVersions(Set<String> wantedEventIdentifiers) {
+        return wantedEventIdentifiers.stream()
+                .filter(this::isRegistered)
+                .filter(identifier -> getRegistration(identifier).getVersion() > 0)
+                .collect(Collectors.toMap(Function.identity(), identifier -> getRegistration(identifier).getVersion()));
+    }
+
     public static final class RegistrationBuilder {
         private final PacketRegistry registry;
         private final String identifier;
@@ -98,10 +110,19 @@ public class PacketRegistry {
         private Function<PacketSerializer, ? extends ClientboundHypixelPacket> clientPacketFactory;
         private Class<? extends HypixelPacket> serverboundClazz;
         private Function<PacketSerializer, ? extends HypixelPacket> serverPacketFactory;
+        private int version = 0;
 
         RegistrationBuilder(PacketRegistry registry, String identifier) {
             this.registry = registry;
             this.identifier = identifier;
+        }
+
+        public <T extends ClientboundHypixelPacket> RegistrationBuilder clientBoundEvent(
+                int version, Class<T> clientboundClazz, Function<PacketSerializer, T> clientPacketFactory) {
+            this.version = version;
+            this.clientboundClazz = clientboundClazz;
+            this.clientPacketFactory = clientPacketFactory;
+            return this;
         }
 
         public <T extends ClientboundHypixelPacket> RegistrationBuilder clientbound(
@@ -119,24 +140,31 @@ public class PacketRegistry {
         }
 
         public void register() {
-            registry.register(identifier, clientboundClazz, clientPacketFactory, serverboundClazz, serverPacketFactory);
+            registry.register(identifier, version, clientboundClazz, clientPacketFactory, serverboundClazz, serverPacketFactory);
         }
 
     }
 
     static final class Registration {
 
+        private final int version;
         private final Class<? extends ClientboundHypixelPacket> clientboundClazz;
         private final Function<PacketSerializer, ? extends ClientboundHypixelPacket> clientPacketFactory;
         private final Class<? extends HypixelPacket> serverboundClazz;
         private final Function<PacketSerializer, ? extends HypixelPacket> serverPacketFactory;
 
-        public Registration(Class<? extends ClientboundHypixelPacket> clientboundClazz, Function<PacketSerializer, ? extends ClientboundHypixelPacket> clientPacketFactory,
+        public Registration(int version,
+                            Class<? extends ClientboundHypixelPacket> clientboundClazz, Function<PacketSerializer, ? extends ClientboundHypixelPacket> clientPacketFactory,
                             Class<? extends HypixelPacket> serverboundClazz, Function<PacketSerializer, ? extends HypixelPacket> serverPacketFactory) {
+            this.version = version;
             this.clientboundClazz = clientboundClazz;
             this.clientPacketFactory = clientPacketFactory;
             this.serverboundClazz = serverboundClazz;
             this.serverPacketFactory = serverPacketFactory;
+        }
+
+        int getVersion() {
+            return version;
         }
 
         Class<? extends ClientboundHypixelPacket> getClientboundClazz() {
