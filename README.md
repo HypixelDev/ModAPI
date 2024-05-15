@@ -49,13 +49,13 @@ You can then include the dependency in your project.
 <dependency>
     <groupId>net.hypixel</groupId>
     <artifactId>mod-api</artifactId>
-    <version>0.3.3</version>
+    <version>0.4.0</version>
 </dependency>
 ```
 
 ```gradle
 dependencies {
-    implementation 'net.hypixel:mod-api:0.3.3'
+    implementation 'net.hypixel:mod-api:0.4.0'
 }
 ```
 
@@ -64,7 +64,7 @@ Depending on your chosen mod loader, you will need to also include the `hypixel-
 ```json
 {
   "depends": {
-    "hypixel-mod-api": ">=0.3.3"
+    "hypixel-mod-api": ">=0.4.0"
   }
 }
 ```
@@ -95,6 +95,18 @@ public class Example {
                 packet.getServerName();
             }
         });
+    }
+}
+```
+
+### Subscribing to a packet event
+
+If you wish to receive a specific event packet, you will need to subscribe to the event. Once subscribed you can register a packet handler as normal (see example above).
+
+```java
+public class Example {
+    public void subscribeToPacketEvent() {
+        HypixelModAPI.getInstance().subscribeToEventPacket(ClientboundLocationPacket.class);
     }
 }
 ```
