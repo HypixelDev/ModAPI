@@ -91,7 +91,7 @@ public class ClientboundLocationPacket extends ClientboundVersionedPacket implem
 
     @Override
     public String toString() {
-        return "ClientboundLocationEventPacket{" +
+        return "ClientboundLocationPacket{" +
                 "serverName='" + serverName + '\'' +
                 ", serverType='" + serverType + '\'' +
                 ", lobbyName='" + lobbyName + '\'' +
