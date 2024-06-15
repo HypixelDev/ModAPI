@@ -3,9 +3,6 @@ package net.hypixel.modapi.packet.impl.clientbound;
 import net.hypixel.data.rank.MonthlyPackageRank;
 import net.hypixel.data.rank.PackageRank;
 import net.hypixel.data.rank.PlayerRank;
-import net.hypixel.modapi.handler.ClientboundPacketHandler;
-import net.hypixel.modapi.packet.ClientboundHypixelPacket;
-import net.hypixel.modapi.packet.impl.VersionedPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
 import org.jetbrains.annotations.Nullable;
 
@@ -57,11 +54,6 @@ public class ClientboundPlayerInfoPacket extends ClientboundVersionedPacket {
     @Override
     protected int getLatestVersion() {
         return CURRENT_VERSION;
-    }
-
-    @Override
-    public void handle(ClientboundPacketHandler handler) {
-        handler.onPlayerInfoPacket(this);
     }
 
     public PlayerRank getPlayerRank() {

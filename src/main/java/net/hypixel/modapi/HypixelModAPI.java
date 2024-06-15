@@ -130,12 +130,14 @@ public class HypixelModAPI {
         handle(packet);
     }
 
+    @SuppressWarnings("unchecked")
     public void handle(ClientboundHypixelPacket packet) {
         Collection<ClientboundPacketHandler<?>> typedHandlers = handlers.get(packet.getClass());
         // nothing registered for this packet.
         if (typedHandlers == null) return;
         for (ClientboundPacketHandler<?> handler : typedHandlers) {
-            packet.handle(handler);
+            // this cast is safe as we ensure its type when it is added to the handlers list in the first place.
+            ((ClientboundPacketHandler<ClientboundHypixelPacket>) handler).handle(packet);
         }
     }
 

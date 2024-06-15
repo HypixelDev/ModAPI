@@ -1,6 +1,5 @@
 package net.hypixel.modapi.packet.impl.clientbound;
 
-import net.hypixel.modapi.handler.ClientboundPacketHandler;
 import net.hypixel.modapi.serializer.PacketSerializer;
 
 import java.util.*;
@@ -82,11 +81,6 @@ public class ClientboundPartyInfoPacket extends ClientboundVersionedPacket {
     @Override
     protected int getLatestVersion() {
         return CURRENT_VERSION;
-    }
-
-    @Override
-    public void handle(ClientboundPacketHandler handler) {
-        handler.onPartyInfoPacket(this);
     }
 
     public boolean isInParty() {

@@ -1,8 +1,5 @@
 package net.hypixel.modapi.packet.impl.clientbound;
 
-import net.hypixel.modapi.handler.ClientboundPacketHandler;
-import net.hypixel.modapi.packet.ClientboundHypixelPacket;
-import net.hypixel.modapi.packet.impl.VersionedPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
 
 public class ClientboundPingPacket extends ClientboundVersionedPacket {
@@ -38,11 +35,6 @@ public class ClientboundPingPacket extends ClientboundVersionedPacket {
     @Override
     protected int getLatestVersion() {
         return CURRENT_VERSION;
-    }
-
-    @Override
-    public void handle(ClientboundPacketHandler handler) {
-        handler.onPingPacket(this);
     }
 
     public String getResponse() {
