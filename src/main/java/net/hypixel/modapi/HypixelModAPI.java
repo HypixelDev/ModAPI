@@ -28,7 +28,7 @@ public class HypixelModAPI {
     }
 
     private final PacketRegistry registry = new PacketRegistry();
-    private final List<ClientboundPacketHandler> handlers = new CopyOnWriteArrayList<>();
+    private final Map<Class<? extends ClientboundHypixelPacket>, Collection<ClientboundPacketHandler<?>>> handlers = new ConcurrentHashMap<>();
     private final Set<String> subscribedEvents = ConcurrentHashMap.newKeySet();
     private Set<String> lastSubscribedEvents = Collections.emptySet();
     private Predicate<HypixelPacket> packetSender = null;
@@ -71,20 +71,16 @@ public class HypixelModAPI {
     }
 
     private void registerDefaultHandler() {
-        registerHandler(new ClientboundPacketHandler() {
-            @Override
-            public void onHelloEvent(ClientboundHelloPacket packet) {
-                sendRegisterPacket(true);
-            }
-        });
+        registerHandler(ClientboundHelloPacket.class, p -> sendRegisterPacket(true));
     }
 
     public PacketRegistry getRegistry() {
         return registry;
     }
 
-    public void registerHandler(ClientboundPacketHandler handler) {
-        handlers.add(handler);
+    public <T extends ClientboundHypixelPacket> void registerHandler(Class<T> packetClass, ClientboundPacketHandler<T> handler) {
+        if (packetClass == null || handler == null) return;
+        handlers.computeIfAbsent(packetClass, cls -> new CopyOnWriteArrayList<>()).add(handler);
     }
 
     public void subscribeToEventPacket(Class<? extends EventPacket> packet) {
@@ -135,7 +131,10 @@ public class HypixelModAPI {
     }
 
     public void handle(ClientboundHypixelPacket packet) {
-        for (ClientboundPacketHandler handler : handlers) {
+        Collection<ClientboundPacketHandler<?>> typedHandlers = handlers.get(packet.getClass());
+        // nothing registered for this packet.
+        if (typedHandlers == null) return;
+        for (ClientboundPacketHandler<?> handler : typedHandlers) {
             packet.handle(handler);
         }
     }

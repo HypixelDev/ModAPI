@@ -1,25 +1,8 @@
 package net.hypixel.modapi.handler;
 
-import net.hypixel.modapi.packet.impl.clientbound.ClientboundHelloPacket;
-import net.hypixel.modapi.packet.impl.clientbound.ClientboundPartyInfoPacket;
-import net.hypixel.modapi.packet.impl.clientbound.ClientboundPingPacket;
-import net.hypixel.modapi.packet.impl.clientbound.ClientboundPlayerInfoPacket;
-import net.hypixel.modapi.packet.impl.clientbound.event.ClientboundLocationPacket;
+import net.hypixel.modapi.packet.ClientboundHypixelPacket;
 
-public interface ClientboundPacketHandler {
-
-    default void onHelloEvent(ClientboundHelloPacket packet) {
-    }
-
-    default void onPingPacket(ClientboundPingPacket packet) {
-    }
-
-    default void onPartyInfoPacket(ClientboundPartyInfoPacket packet) {
-    }
-
-    default void onPlayerInfoPacket(ClientboundPlayerInfoPacket packet) {
-    }
-
-    default void onLocationEvent(ClientboundLocationPacket packet) {
-    }
+@FunctionalInterface
+public interface ClientboundPacketHandler<T extends ClientboundHypixelPacket> {
+    void handle(T packet);
 }
