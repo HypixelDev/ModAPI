@@ -1,16 +1,16 @@
 # Hypixel Mod API
 
-The Hypixel Mod API is an implementation of custom packets for communicating with the Hypixel Server via plugin messages.
+The Hypixel Mod API is an implementation of custom packets for communicating with the Hypixel Server via plugin
+messages.
 
-Currently, the API is in an early preview state to gather community feedback. The API is subject to change and may be 
-altered or disabled at any time. You can read more about on 
+Currently, the API is in an early preview state to gather community feedback. The API is subject to change and may be
+altered or disabled at any time. You can read more about on
 the [announcement forum thread](https://hypixel.net/threads/hypixel-mod-api-developer-preview-feedback.5635119/).
-
 
 ## Mod Distributions
 
 Official downloads of the Hypixel Mod API can be found on [Modrinth](https://modrinth.com/mod/hypixel-mod-api).
-To install the mod, simply download the JAR file and place it in your mods folder. 
+To install the mod, simply download the JAR file and place it in your mods folder.
 
 Currently, the Hypixel Mod API supports the following mod loaders and versions:
 
@@ -19,13 +19,13 @@ Currently, the Hypixel Mod API supports the following mod loaders and versions:
 
 If there is significant demand, support for additional versions and loaders may be considered.
 
-
 ## Developer Usage
 
-For using the Mod API you will need to add it as a dependency to your project. This can be done via the public 
+For using the Mod API you will need to add it as a dependency to your project. This can be done via the public
 Hypixel Maven repository.
 
 ```xml
+
 <repository>
     <id>Hypixel</id>
     <url>https://repo.hypixel.net/repository/Hypixel/</url>
@@ -43,6 +43,7 @@ repositories {
 You can then include the dependency in your project.
 
 ```xml
+
 <dependency>
     <groupId>net.hypixel</groupId>
     <artifactId>mod-api</artifactId>
@@ -56,7 +57,8 @@ dependencies {
 }
 ```
 
-Depending on your chosen mod loader, you will need to also include the `hypixel-mod-api` as a required dependency. For example in Fabric you would include the following in your `fabric.mod.json` file.
+Depending on your chosen mod loader, you will need to also include the `hypixel-mod-api` as a required dependency. For
+example in Fabric you would include the following in your `fabric.mod.json` file.
 
 ```json
 {
@@ -68,7 +70,8 @@ Depending on your chosen mod loader, you will need to also include the `hypixel-
 
 ## Example Usage
 
-Once you have the API added to your project you can start using it. Below are examples of sending server-bound packets, as well as receiving client-bound packets.
+Once you have the API added to your project you can start using it. Below are examples of sending server-bound packets,
+as well as receiving client-bound packets.
 
 ### Sending a Hypixel Packet
 
@@ -95,7 +98,8 @@ public class Example {
 
 ### Subscribing to a packet event
 
-If you wish to receive a specific event packet, you will need to subscribe to the event. Once subscribed you can register a packet handler as normal (see example above).
+If you wish to receive a specific event packet, you will need to subscribe to the event. Once subscribed you can
+register a packet handler as normal (see example above).
 
 ```java
 public class Example {
@@ -104,3 +108,9 @@ public class Example {
     }
 }
 ```
+
+Registering for an event packet is only required one time during the Minecraft client lifecycle. You can register for
+event packets at anytime, including in your mod initialization code before the player has connected.
+
+The implementation of the Mod API will automatically notify the server of any registered events when receiving
+the `ClientboundHelloPacket`.
