@@ -46,13 +46,13 @@ You can then include the dependency in your project.
 <dependency>
     <groupId>net.hypixel</groupId>
     <artifactId>mod-api</artifactId>
-    <version>0.4.0</version>
+    <version>0.5.0</version>
 </dependency>
 ```
 
 ```gradle
 dependencies {
-    implementation 'net.hypixel:mod-api:0.4.0'
+    implementation 'net.hypixel:mod-api:0.5.0'
 }
 ```
 
@@ -61,7 +61,7 @@ Depending on your chosen mod loader, you will need to also include the `hypixel-
 ```json
 {
   "depends": {
-    "hypixel-mod-api": ">=0.4.0"
+    "hypixel-mod-api": ">=0.5.0"
   }
 }
 ```
@@ -75,7 +75,7 @@ Once you have the API added to your project you can start using it. Below are ex
 ```java
 public class Example {
     public void sendPacket() {
-        HypixelModAPI.getInstance().sendPacket(new ServerboundLocationPacket());
+        HypixelModAPI.getInstance().sendPacket(new ServerboundPartyInfoPacket());
     }
 }
 ```
@@ -86,11 +86,8 @@ public class Example {
 
 public class Example {
     public void registerPacketHandler() {
-        HypixelModAPI.getInstance().registerHandler(new ClientboundPacketHandler() {
-            @Override
-            public void onLocationPacket(ClientboundLocationPacket packet) {
-                packet.getServerName();
-            }
+        HypixelModAPI.getInstance().registerHandler(ClientboundLocationPacket.class, packet -> {
+            packet.getServerName();
         });
     }
 }
