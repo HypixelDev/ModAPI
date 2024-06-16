@@ -1,8 +1,6 @@
 package net.hypixel.modapi.packet.impl.clientbound;
 
 import net.hypixel.data.region.Environment;
-import net.hypixel.modapi.annotation.Experimental;
-import net.hypixel.modapi.handler.ClientboundPacketHandler;
 import net.hypixel.modapi.packet.ClientboundHypixelPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
 
@@ -22,11 +20,6 @@ public class ClientboundHelloPacket implements ClientboundHypixelPacket {
 
         // Read any remaining bytes, so that if more data is added in the future, it will be discarded on older clients
         serializer.discardRemaining();
-    }
-
-    @Override
-    public void handle(ClientboundPacketHandler handler) {
-        handler.onHelloEvent(this);
     }
 
     @Override

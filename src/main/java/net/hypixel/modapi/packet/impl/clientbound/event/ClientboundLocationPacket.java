@@ -1,7 +1,6 @@
 package net.hypixel.modapi.packet.impl.clientbound.event;
 
 import net.hypixel.data.type.ServerType;
-import net.hypixel.modapi.handler.ClientboundPacketHandler;
 import net.hypixel.modapi.packet.EventPacket;
 import net.hypixel.modapi.packet.impl.clientbound.ClientboundVersionedPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
@@ -62,11 +61,6 @@ public class ClientboundLocationPacket extends ClientboundVersionedPacket implem
     @Override
     protected int getLatestVersion() {
         return CURRENT_VERSION;
-    }
-
-    @Override
-    public void handle(ClientboundPacketHandler handler) {
-        handler.onLocationEvent(this);
     }
 
     public String getServerName() {
