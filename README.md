@@ -3,10 +3,6 @@
 The Hypixel Mod API is an implementation of custom packets for communicating with the Hypixel Server via plugin
 messages.
 
-Currently, the API is in an early preview state to gather community feedback. The API is subject to change and may be
-altered or disabled at any time. You can read more about on
-the [announcement forum thread](https://hypixel.net/threads/hypixel-mod-api-developer-preview-feedback.5635119/).
-
 ## Mod Distributions
 
 Official downloads of the Hypixel Mod API can be found on [Modrinth](https://modrinth.com/mod/hypixel-mod-api).
