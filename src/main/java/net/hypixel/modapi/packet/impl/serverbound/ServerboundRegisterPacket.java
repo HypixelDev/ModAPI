@@ -1,11 +1,13 @@
 package net.hypixel.modapi.packet.impl.serverbound;
 
+import net.hypixel.modapi.packet.PacketRegistry;
 import net.hypixel.modapi.serializer.PacketSerializer;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Notifys the remote server what versions of event packets we want to receive.
@@ -20,9 +22,9 @@ public class ServerboundRegisterPacket extends ServerboundVersionedPacket {
 
     private Map<String, Integer> subscribedEvents;
 
-    public ServerboundRegisterPacket(Map<String, Integer> subscribedEvents) {
+    public ServerboundRegisterPacket(PacketRegistry registry, Set<String> subscribedEventIdentifiers) {
         super(CURRENT_VERSION);
-        this.subscribedEvents = subscribedEvents;
+        this.subscribedEvents = registry.getEventVersions(subscribedEventIdentifiers);
 
         if (subscribedEvents.size() > MAX_IDENTIFIERS) {
             throw new IllegalArgumentException("wantedPackets cannot contain more than " + MAX_IDENTIFIERS + " identifiers");

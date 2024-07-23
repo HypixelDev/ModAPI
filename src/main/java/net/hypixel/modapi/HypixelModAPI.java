@@ -86,8 +86,7 @@ public class HypixelModAPI {
         }
 
         Set<String> lastSubscribedEvents = new HashSet<>(subscribedEvents);
-        Map<String, Integer> versionsMap = getRegistry().getEventVersions(lastSubscribedEvents);
-        if (sendPacket(new ServerboundRegisterPacket(versionsMap))) {
+        if (sendPacket(new ServerboundRegisterPacket(registry, lastSubscribedEvents))) {
             this.lastSubscribedEvents = lastSubscribedEvents;
         }
     }
