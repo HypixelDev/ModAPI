@@ -75,6 +75,23 @@ public class HypixelModAPI {
         registerHandler(ClientboundHelloPacket.class, p -> sendRegisterPacket(true));
     }
 
+    private void sendRegisterPacket(boolean alwaysSendIfNotEmpty) {
+        if (packetSender == null) {
+            // Allow registering events before the mod has fully initialized
+            return;
+        }
+
+        if (lastSubscribedEvents.equals(subscribedEvents) && !(alwaysSendIfNotEmpty && !subscribedEvents.isEmpty())) {
+            return;
+        }
+
+        Set<String> lastSubscribedEvents = new HashSet<>(subscribedEvents);
+        Map<String, Integer> versionsMap = getRegistry().getEventVersions(lastSubscribedEvents);
+        if (sendPacket(new ServerboundRegisterPacket(versionsMap))) {
+            this.lastSubscribedEvents = lastSubscribedEvents;
+        }
+    }
+
     @ApiStatus.Internal
     public PacketRegistry getRegistry() {
         return registry;
@@ -133,23 +150,6 @@ public class HypixelModAPI {
     public void subscribeToEventPacket(Class<? extends EventPacket> packet) {
         if (subscribedEvents.add(getRegistry().getIdentifier(packet))) {
             sendRegisterPacket(false);
-        }
-    }
-
-    private void sendRegisterPacket(boolean alwaysSendIfNotEmpty) {
-        if (packetSender == null) {
-            // Allow registering events before the mod has fully initialized
-            return;
-        }
-
-        if (lastSubscribedEvents.equals(subscribedEvents) && !(alwaysSendIfNotEmpty && !subscribedEvents.isEmpty())) {
-            return;
-        }
-
-        Set<String> lastSubscribedEvents = new HashSet<>(subscribedEvents);
-        Map<String, Integer> versionsMap = getRegistry().getEventVersions(lastSubscribedEvents);
-        if (sendPacket(new ServerboundRegisterPacket(versionsMap))) {
-            this.lastSubscribedEvents = lastSubscribedEvents;
         }
     }
 
