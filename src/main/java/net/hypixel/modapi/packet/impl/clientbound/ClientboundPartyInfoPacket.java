@@ -1,6 +1,7 @@
 package net.hypixel.modapi.packet.impl.clientbound;
 
 import net.hypixel.modapi.serializer.PacketSerializer;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.*;
 
@@ -10,6 +11,7 @@ public class ClientboundPartyInfoPacket extends ClientboundVersionedPacket {
     private boolean inParty;
     private Map<UUID, PartyMember> memberMap;
 
+    @ApiStatus.Internal
     public ClientboundPartyInfoPacket(int version, boolean inParty, Map<UUID, PartyMember> memberMap) {
         super(version);
         if (version > CURRENT_VERSION) {
@@ -20,6 +22,7 @@ public class ClientboundPartyInfoPacket extends ClientboundVersionedPacket {
         this.memberMap = memberMap;
     }
 
+    @ApiStatus.Internal
     public ClientboundPartyInfoPacket(PacketSerializer serializer) {
         super(serializer);
     }
@@ -117,11 +120,13 @@ public class ClientboundPartyInfoPacket extends ClientboundVersionedPacket {
         private final UUID uuid;
         private final PartyRole role;
 
+        @ApiStatus.Internal
         public PartyMember(UUID uuid, PartyRole role) {
             this.uuid = uuid;
             this.role = role;
         }
 
+        @ApiStatus.Internal
         PartyMember(PacketSerializer serializer) {
             this.uuid = serializer.readUuid();
             this.role = PartyRole.VALUES[serializer.readVarInt()];

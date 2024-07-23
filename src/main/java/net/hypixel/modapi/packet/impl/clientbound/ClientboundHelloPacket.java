@@ -3,6 +3,7 @@ package net.hypixel.modapi.packet.impl.clientbound;
 import net.hypixel.data.region.Environment;
 import net.hypixel.modapi.packet.ClientboundHypixelPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * This packet is automatically sent on every join to Hypixel to indicate that the client has connected to a Hypixel server.
@@ -11,10 +12,12 @@ import net.hypixel.modapi.serializer.PacketSerializer;
 public class ClientboundHelloPacket implements ClientboundHypixelPacket {
     private final Environment environment;
 
+    @ApiStatus.Internal
     public ClientboundHelloPacket(Environment environment) {
         this.environment = environment;
     }
 
+    @ApiStatus.Internal
     public ClientboundHelloPacket(PacketSerializer serializer) {
         this.environment = Environment.getById(serializer.readVarInt()).orElseThrow(() -> new IllegalArgumentException("Invalid environment ID"));
 

@@ -1,6 +1,7 @@
 package net.hypixel.modapi.packet.impl.serverbound;
 
 import net.hypixel.modapi.serializer.PacketSerializer;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -18,6 +19,7 @@ public class ServerboundRegisterPacket extends ServerboundVersionedPacket {
 
     private Map<String, Integer> subscribedEvents;
 
+    @ApiStatus.Internal
     public ServerboundRegisterPacket(Map<String, Integer> subscribedEvents) {
         super(CURRENT_VERSION);
         this.subscribedEvents = subscribedEvents;
@@ -27,6 +29,7 @@ public class ServerboundRegisterPacket extends ServerboundVersionedPacket {
         }
     }
 
+    @ApiStatus.Internal
     public ServerboundRegisterPacket(PacketSerializer serializer) {
         super(serializer);
     }
