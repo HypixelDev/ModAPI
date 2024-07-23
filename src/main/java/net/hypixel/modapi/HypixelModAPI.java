@@ -14,6 +14,7 @@ import net.hypixel.modapi.packet.impl.serverbound.ServerboundPingPacket;
 import net.hypixel.modapi.packet.impl.serverbound.ServerboundPlayerInfoPacket;
 import net.hypixel.modapi.packet.impl.serverbound.ServerboundRegisterPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -74,8 +75,54 @@ public class HypixelModAPI {
         registerHandler(ClientboundHelloPacket.class, p -> sendRegisterPacket(true));
     }
 
+    @ApiStatus.Internal
     public PacketRegistry getRegistry() {
         return registry;
+    }
+
+    @ApiStatus.Internal
+    public void handle(String identifier, PacketSerializer serializer) {
+        if (handlers.isEmpty()) {
+            return;
+        }
+
+        if (!registry.isRegistered(identifier)) {
+            return;
+        }
+
+        // All responses contain a boolean of if the response is a success, if not then a further var int is included to identify the error
+        if (!serializer.readBoolean()) {
+            ErrorReason reason = ErrorReason.getById(serializer.readVarInt());
+            throw new ModAPIException(identifier, reason);
+        }
+
+        ClientboundHypixelPacket packet = registry.createClientboundPacket(identifier, serializer);
+        if (packet instanceof ClientboundVersionedPacket && !((ClientboundVersionedPacket) packet).isExpectedVersion()) {
+            // Ignore packets that don't match our expected version, these could be received due to other mods requesting them
+            return;
+        }
+
+        handle(packet);
+    }
+
+    @ApiStatus.Internal
+    @SuppressWarnings("unchecked")
+    public void handle(ClientboundHypixelPacket packet) {
+        Collection<ClientboundPacketHandler<?>> typedHandlers = handlers.get(packet.getClass());
+        // nothing registered for this packet.
+        if (typedHandlers == null) return;
+        for (ClientboundPacketHandler<?> handler : typedHandlers) {
+            // this cast is safe as we ensure its type when it is added to the handlers list in the first place.
+            ((ClientboundPacketHandler<ClientboundHypixelPacket>) handler).handle(packet);
+        }
+    }
+
+    @ApiStatus.Internal
+    public void setPacketSender(Predicate<HypixelPacket> packetSender) {
+        if (this.packetSender != null) {
+            throw new IllegalArgumentException("Packet sender already set");
+        }
+        this.packetSender = packetSender;
     }
 
     public <T extends ClientboundHypixelPacket> void registerHandler(Class<T> packetClass, ClientboundPacketHandler<T> handler) {
@@ -104,48 +151,6 @@ public class HypixelModAPI {
         if (sendPacket(new ServerboundRegisterPacket(versionsMap))) {
             this.lastSubscribedEvents = lastSubscribedEvents;
         }
-    }
-
-    public void handle(String identifier, PacketSerializer serializer) {
-        if (handlers.isEmpty()) {
-            return;
-        }
-
-        if (!registry.isRegistered(identifier)) {
-            return;
-        }
-
-        // All responses contain a boolean of if the response is a success, if not then a further var int is included to identify the error
-        if (!serializer.readBoolean()) {
-            ErrorReason reason = ErrorReason.getById(serializer.readVarInt());
-            throw new ModAPIException(identifier, reason);
-        }
-
-        ClientboundHypixelPacket packet = registry.createClientboundPacket(identifier, serializer);
-        if (packet instanceof ClientboundVersionedPacket && !((ClientboundVersionedPacket) packet).isExpectedVersion()) {
-            // Ignore packets that don't match our expected version, these could be received due to other mods requesting them
-            return;
-        }
-
-        handle(packet);
-    }
-
-    @SuppressWarnings("unchecked")
-    public void handle(ClientboundHypixelPacket packet) {
-        Collection<ClientboundPacketHandler<?>> typedHandlers = handlers.get(packet.getClass());
-        // nothing registered for this packet.
-        if (typedHandlers == null) return;
-        for (ClientboundPacketHandler<?> handler : typedHandlers) {
-            // this cast is safe as we ensure its type when it is added to the handlers list in the first place.
-            ((ClientboundPacketHandler<ClientboundHypixelPacket>) handler).handle(packet);
-        }
-    }
-
-    public void setPacketSender(Predicate<HypixelPacket> packetSender) {
-        if (this.packetSender != null) {
-            throw new IllegalArgumentException("Packet sender already set");
-        }
-        this.packetSender = packetSender;
     }
 
     /**
