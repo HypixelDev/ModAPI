@@ -20,7 +20,6 @@ public class ServerboundRegisterPacket extends ServerboundVersionedPacket {
 
     private Map<String, Integer> subscribedEvents;
 
-    @ApiStatus.Internal
     public ServerboundRegisterPacket(Map<String, Integer> subscribedEvents) {
         super(CURRENT_VERSION);
         this.subscribedEvents = subscribedEvents;
@@ -30,7 +29,6 @@ public class ServerboundRegisterPacket extends ServerboundVersionedPacket {
         }
     }
 
-    @ApiStatus.Internal
     public ServerboundRegisterPacket(PacketSerializer serializer) {
         super(serializer);
     }
@@ -63,7 +61,6 @@ public class ServerboundRegisterPacket extends ServerboundVersionedPacket {
         }
     }
 
-    @ApiStatus.Internal
     public Map<String, Integer> getSubscribedEvents() {
         return Collections.unmodifiableMap(subscribedEvents);
     }
