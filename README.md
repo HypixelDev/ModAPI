@@ -53,8 +53,7 @@ dependencies {
 }
 ```
 
-Depending on your chosen mod loader, you will need to also include the `hypixel-mod-api` as a required dependency. For
-example in Fabric you would include the following in your `fabric.mod.json` file.
+Depending on your chosen mod loader, you will need to also include the `hypixel-mod-api` as a required dependency. In Fabric you would include the following in your `fabric.mod.json` file.
 
 ```json
 {
@@ -63,6 +62,16 @@ example in Fabric you would include the following in your `fabric.mod.json` file
   }
 }
 ```
+For 1.8.9 Forge you need to include the `hypixel_mod_api` as a dependency listed in your `@Mod` annotation for the main mod class.
+```java
+@Mod(modid = "example_mod", version = "1.0", useMetadata = true, dependencies = "required-after:hypixel_mod_api@[1.0.0,)")
+public class ExampleMod {
+    @Mod.EventHandler
+    public void init(FMLInitializationEvent event) {
+    }
+}
+```
+
 
 ## Example Usage
 
