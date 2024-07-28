@@ -3,16 +3,19 @@ package net.hypixel.modapi.packet.impl.clientbound;
 import net.hypixel.modapi.packet.ClientboundHypixelPacket;
 import net.hypixel.modapi.packet.impl.VersionedPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * Represents a packet that is backed by a version. Clientbound versioned packets will only be handled if the incoming packet matches the version of the packet known.
  */
 public abstract class ClientboundVersionedPacket extends VersionedPacket implements ClientboundHypixelPacket {
 
+    @ApiStatus.Internal
     public ClientboundVersionedPacket(int version) {
         super(version);
     }
 
+    @ApiStatus.Internal
     public ClientboundVersionedPacket(PacketSerializer serializer) {
         super(serializer);
     }
@@ -32,6 +35,7 @@ public abstract class ClientboundVersionedPacket extends VersionedPacket impleme
 
     protected abstract int getLatestVersion();
 
+    @ApiStatus.Internal
     public boolean isExpectedVersion() {
         return getVersion() == getLatestVersion();
     }

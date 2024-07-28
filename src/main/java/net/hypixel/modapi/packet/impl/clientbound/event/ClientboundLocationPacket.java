@@ -4,6 +4,7 @@ import net.hypixel.data.type.ServerType;
 import net.hypixel.modapi.packet.EventPacket;
 import net.hypixel.modapi.packet.impl.clientbound.ClientboundVersionedPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -21,6 +22,7 @@ public class ClientboundLocationPacket extends ClientboundVersionedPacket implem
     @Nullable
     private String map;
 
+    @ApiStatus.Internal
     public ClientboundLocationPacket(String serverName, @Nullable ServerType serverType, @Nullable String lobbyName, @Nullable String mode, @Nullable String map) {
         super(CURRENT_VERSION);
         this.serverName = serverName;
@@ -30,6 +32,7 @@ public class ClientboundLocationPacket extends ClientboundVersionedPacket implem
         this.map = map;
     }
 
+    @ApiStatus.Internal
     public ClientboundLocationPacket(PacketSerializer serializer) {
         super(serializer);
     }

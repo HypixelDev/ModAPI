@@ -1,6 +1,7 @@
 package net.hypixel.modapi.packet;
 
 import net.hypixel.modapi.serializer.PacketSerializer;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -10,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@ApiStatus.Internal
 public class PacketRegistry {
 
     private final Map<String, Registration> registrations = new ConcurrentHashMap<>();

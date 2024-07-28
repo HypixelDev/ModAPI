@@ -14,6 +14,7 @@ import net.hypixel.modapi.packet.impl.serverbound.ServerboundPingPacket;
 import net.hypixel.modapi.packet.impl.serverbound.ServerboundPlayerInfoPacket;
 import net.hypixel.modapi.packet.impl.serverbound.ServerboundRegisterPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -74,21 +75,6 @@ public class HypixelModAPI {
         registerHandler(ClientboundHelloPacket.class, p -> sendRegisterPacket(true));
     }
 
-    public PacketRegistry getRegistry() {
-        return registry;
-    }
-
-    public <T extends ClientboundHypixelPacket> void registerHandler(Class<T> packetClass, ClientboundPacketHandler<T> handler) {
-        if (packetClass == null || handler == null) return;
-        handlers.computeIfAbsent(packetClass, cls -> new CopyOnWriteArrayList<>()).add(handler);
-    }
-
-    public void subscribeToEventPacket(Class<? extends EventPacket> packet) {
-        if (subscribedEvents.add(getRegistry().getIdentifier(packet))) {
-            sendRegisterPacket(false);
-        }
-    }
-
     private void sendRegisterPacket(boolean alwaysSendIfNotEmpty) {
         if (packetSender == null) {
             // Allow registering events before the mod has fully initialized
@@ -100,12 +86,17 @@ public class HypixelModAPI {
         }
 
         Set<String> lastSubscribedEvents = new HashSet<>(subscribedEvents);
-        Map<String, Integer> versionsMap = getRegistry().getEventVersions(lastSubscribedEvents);
-        if (sendPacket(new ServerboundRegisterPacket(versionsMap))) {
+        if (sendPacket(new ServerboundRegisterPacket(registry, lastSubscribedEvents))) {
             this.lastSubscribedEvents = lastSubscribedEvents;
         }
     }
 
+    @ApiStatus.Internal
+    public PacketRegistry getRegistry() {
+        return registry;
+    }
+
+    @ApiStatus.Internal
     public void handle(String identifier, PacketSerializer serializer) {
         if (handlers.isEmpty()) {
             return;
@@ -130,6 +121,7 @@ public class HypixelModAPI {
         handle(packet);
     }
 
+    @ApiStatus.Internal
     @SuppressWarnings("unchecked")
     public void handle(ClientboundHypixelPacket packet) {
         Collection<ClientboundPacketHandler<?>> typedHandlers = handlers.get(packet.getClass());
@@ -141,11 +133,23 @@ public class HypixelModAPI {
         }
     }
 
+    @ApiStatus.Internal
     public void setPacketSender(Predicate<HypixelPacket> packetSender) {
         if (this.packetSender != null) {
             throw new IllegalArgumentException("Packet sender already set");
         }
         this.packetSender = packetSender;
+    }
+
+    public <T extends ClientboundHypixelPacket> void registerHandler(Class<T> packetClass, ClientboundPacketHandler<T> handler) {
+        if (packetClass == null || handler == null) return;
+        handlers.computeIfAbsent(packetClass, cls -> new CopyOnWriteArrayList<>()).add(handler);
+    }
+
+    public void subscribeToEventPacket(Class<? extends EventPacket> packet) {
+        if (subscribedEvents.add(getRegistry().getIdentifier(packet))) {
+            sendRegisterPacket(false);
+        }
     }
 
     /**

@@ -4,6 +4,7 @@ import net.hypixel.data.rank.MonthlyPackageRank;
 import net.hypixel.data.rank.PackageRank;
 import net.hypixel.data.rank.PlayerRank;
 import net.hypixel.modapi.serializer.PacketSerializer;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -17,6 +18,7 @@ public class ClientboundPlayerInfoPacket extends ClientboundVersionedPacket {
     @Nullable
     private String prefix;
 
+    @ApiStatus.Internal
     public ClientboundPlayerInfoPacket(PlayerRank playerRank, PackageRank packageRank, MonthlyPackageRank monthlyPackageRank, @Nullable String prefix) {
         super(CURRENT_VERSION);
         this.playerRank = playerRank;
@@ -25,6 +27,7 @@ public class ClientboundPlayerInfoPacket extends ClientboundVersionedPacket {
         this.prefix = prefix;
     }
 
+    @ApiStatus.Internal
     public ClientboundPlayerInfoPacket(PacketSerializer serializer) {
         super(serializer);
     }
