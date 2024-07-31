@@ -43,13 +43,13 @@ You can then include the dependency in your project.
 <dependency>
     <groupId>net.hypixel</groupId>
     <artifactId>mod-api</artifactId>
-    <version>1.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
 ```gradle
 dependencies {
-    implementation 'net.hypixel:mod-api:1.0'
+    implementation 'net.hypixel:mod-api:1.0.1'
 }
 ```
 
@@ -59,7 +59,7 @@ example in Fabric you would include the following in your `fabric.mod.json` file
 ```json
 {
   "depends": {
-    "hypixel-mod-api": ">=1.0"
+    "hypixel-mod-api": ">=1.0.1"
   }
 }
 ```
@@ -85,7 +85,7 @@ public class Example {
 
 public class Example {
     public void registerPacketHandler() {
-        HypixelModAPI.getInstance().registerHandler(ClientboundLocationPacket.class, packet -> {
+        HypixelModAPI.getInstance().createHandler(ClientboundLocationPacket.class, packet -> {
             packet.getServerName();
         });
     }
