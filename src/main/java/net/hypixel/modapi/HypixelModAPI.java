@@ -1,8 +1,9 @@
 package net.hypixel.modapi;
 
 import net.hypixel.modapi.error.ErrorReason;
-import net.hypixel.modapi.error.ModAPIException;
 import net.hypixel.modapi.handler.ClientboundPacketHandler;
+import net.hypixel.modapi.handler.ErrorHandler;
+import net.hypixel.modapi.handler.RegisteredHandler;
 import net.hypixel.modapi.packet.ClientboundHypixelPacket;
 import net.hypixel.modapi.packet.EventPacket;
 import net.hypixel.modapi.packet.HypixelPacket;
@@ -29,7 +30,7 @@ public class HypixelModAPI {
     }
 
     private final PacketRegistry registry = new PacketRegistry();
-    private final Map<Class<? extends ClientboundHypixelPacket>, Collection<ClientboundPacketHandler<?>>> handlers = new ConcurrentHashMap<>();
+    private final Map<String, Collection<RegisteredHandlerImpl<?>>> handlers = new ConcurrentHashMap<>();
     private final Set<String> subscribedEvents = ConcurrentHashMap.newKeySet();
     private Set<String> lastSubscribedEvents = Collections.emptySet();
     private Predicate<HypixelPacket> packetSender = null;
@@ -109,7 +110,8 @@ public class HypixelModAPI {
         // All responses contain a boolean of if the response is a success, if not then a further var int is included to identify the error
         if (!serializer.readBoolean()) {
             ErrorReason reason = ErrorReason.getById(serializer.readVarInt());
-            throw new ModAPIException(identifier, reason);
+            handleError(identifier, reason);
+            return;
         }
 
         ClientboundHypixelPacket packet = registry.createClientboundPacket(identifier, serializer);
@@ -124,12 +126,20 @@ public class HypixelModAPI {
     @ApiStatus.Internal
     @SuppressWarnings("unchecked")
     public void handle(ClientboundHypixelPacket packet) {
-        Collection<ClientboundPacketHandler<?>> typedHandlers = handlers.get(packet.getClass());
+        Collection<RegisteredHandlerImpl<?>> typedHandlers = handlers.get(packet.getIdentifier());
         // nothing registered for this packet.
         if (typedHandlers == null) return;
-        for (ClientboundPacketHandler<?> handler : typedHandlers) {
-            // this cast is safe as we ensure its type when it is added to the handlers list in the first place.
-            ((ClientboundPacketHandler<ClientboundHypixelPacket>) handler).handle(packet);
+        for (RegisteredHandlerImpl<?> handler : typedHandlers) {
+            handler.handle(packet);
+        }
+    }
+
+    @ApiStatus.Internal
+    public void handleError(String identifier, ErrorReason reason) {
+        Collection<RegisteredHandlerImpl<?>> handlers = this.handlers.get(identifier);
+        if (handlers == null) return;
+        for (RegisteredHandlerImpl<?> handler : handlers) {
+            handler.handleError(reason);
         }
     }
 
@@ -141,9 +151,19 @@ public class HypixelModAPI {
         this.packetSender = packetSender;
     }
 
-    public <T extends ClientboundHypixelPacket> void registerHandler(Class<T> packetClass, ClientboundPacketHandler<T> handler) {
-        if (packetClass == null || handler == null) return;
-        handlers.computeIfAbsent(packetClass, cls -> new CopyOnWriteArrayList<>()).add(handler);
+    public <T extends ClientboundHypixelPacket> RegisteredHandler<T> registerHandler(Class<T> packetClass, ClientboundPacketHandler<T> handler) {
+        if (packetClass == null) {
+            throw new NullPointerException("packetClass cannot be null");
+        }
+
+        if (handler == null) {
+            throw new NullPointerException("handler cannot be null");
+        }
+
+        RegisteredHandlerImpl<T> registeredHandler = new RegisteredHandlerImpl<>(handler);
+        handlers.computeIfAbsent(getRegistry().getIdentifier(packetClass), cls -> new CopyOnWriteArrayList<>())
+                .add(registeredHandler);
+        return registeredHandler;
     }
 
     public void subscribeToEventPacket(Class<? extends EventPacket> packet) {
@@ -161,5 +181,33 @@ public class HypixelModAPI {
         }
 
         return packetSender.test(packet);
+    }
+
+    private static class RegisteredHandlerImpl<T extends ClientboundHypixelPacket> implements RegisteredHandler<T> {
+        private final ClientboundPacketHandler<T> handler;
+        private ErrorHandler<T> errorHandler;
+
+        RegisteredHandlerImpl(ClientboundPacketHandler<T> handler) {
+            this.handler = handler;
+        }
+
+        @Override
+        public void onError(ErrorHandler<T> errorHandler) {
+            if (this.errorHandler != null) {
+                throw new IllegalStateException("Error handler already set");
+            }
+            this.errorHandler = errorHandler;
+        }
+
+        void handle(ClientboundHypixelPacket packet) {
+            // this cast is safe as we ensure its type when it is added to the handlers list in the first place.
+            handler.handle((T) packet);
+        }
+
+        void handleError(ErrorReason reason) {
+            if (errorHandler != null) {
+                errorHandler.onError(reason);
+            }
+        }
     }
 }
