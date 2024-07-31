@@ -185,14 +185,14 @@ public class HypixelModAPI {
 
     private static class RegisteredHandlerImpl<T extends ClientboundHypixelPacket> implements RegisteredHandler<T> {
         private final ClientboundPacketHandler<T> handler;
-        private ErrorHandler<T> errorHandler;
+        private ErrorHandler errorHandler;
 
         RegisteredHandlerImpl(ClientboundPacketHandler<T> handler) {
             this.handler = handler;
         }
 
         @Override
-        public void onError(ErrorHandler<T> errorHandler) {
+        public void onError(ErrorHandler errorHandler) {
             if (this.errorHandler != null) {
                 throw new IllegalStateException("Error handler already set");
             }

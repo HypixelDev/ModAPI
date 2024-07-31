@@ -8,5 +8,5 @@ public interface RegisteredHandler<T extends ClientboundHypixelPacket> {
      * <br>
      * Note: This error may be received due to any modification requesting the same packet type.
      */
-    void onError(ErrorHandler<T> errorHandler);
+    void onError(ErrorHandler errorHandler);
 }
