@@ -126,7 +126,7 @@ public class HypixelModAPI {
     @ApiStatus.Internal
     @SuppressWarnings("unchecked")
     public void handle(ClientboundHypixelPacket packet) {
-        Collection<RegisteredHandlerImpl<?>> typedHandlers = handlers.get(getRegistry().getIdentifier(packet.getClass()));
+        Collection<RegisteredHandlerImpl<?>> typedHandlers = handlers.get(packet.getIdentifier());
         // nothing registered for this packet.
         if (typedHandlers == null) return;
         for (RegisteredHandlerImpl<?> handler : typedHandlers) {
@@ -199,12 +199,12 @@ public class HypixelModAPI {
             this.errorHandler = errorHandler;
         }
 
-        public void handle(ClientboundHypixelPacket packet) {
+        void handle(ClientboundHypixelPacket packet) {
             // this cast is safe as we ensure its type when it is added to the handlers list in the first place.
             handler.handle((T) packet);
         }
 
-        public void handleError(ErrorReason reason) {
+        void handleError(ErrorReason reason) {
             if (errorHandler != null) {
                 errorHandler.onError(reason);
             }
