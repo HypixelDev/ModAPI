@@ -73,7 +73,7 @@ public class HypixelModAPI {
     }
 
     private void registerDefaultHandler() {
-        registerHandler(ClientboundHelloPacket.class, p -> sendRegisterPacket(true));
+        createHandler(ClientboundHelloPacket.class, p -> sendRegisterPacket(true));
     }
 
     private void sendRegisterPacket(boolean alwaysSendIfNotEmpty) {
@@ -151,7 +151,15 @@ public class HypixelModAPI {
         this.packetSender = packetSender;
     }
 
-    public <T extends ClientboundHypixelPacket> RegisteredHandler<T> registerHandler(Class<T> packetClass, ClientboundPacketHandler<T> handler) {
+    /**
+     * @deprecated Use {@link #createHandler(Class, ClientboundPacketHandler)} instead
+     */
+    @Deprecated
+    public <T extends ClientboundHypixelPacket> void registerHandler(Class<T> packetClass, ClientboundPacketHandler<T> handler) {
+        createHandler(packetClass, handler);
+    }
+
+    public <T extends ClientboundHypixelPacket> RegisteredHandler<T> createHandler(Class<T> packetClass, ClientboundPacketHandler<T> handler) {
         if (packetClass == null) {
             throw new NullPointerException("packetClass cannot be null");
         }
