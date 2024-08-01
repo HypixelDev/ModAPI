@@ -70,6 +70,10 @@ public class ServerboundRegisterPacket extends ServerboundVersionedPacket {
         }
     }
 
+    public int getRequestIdentifier() {
+        return requestIdentifier;
+    }
+
     public Map<String, Integer> getSubscribedEvents() {
         return Collections.unmodifiableMap(subscribedEvents);
     }
