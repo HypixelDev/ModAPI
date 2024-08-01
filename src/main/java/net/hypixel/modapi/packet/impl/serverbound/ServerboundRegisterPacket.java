@@ -41,7 +41,9 @@ public class ServerboundRegisterPacket extends ServerboundVersionedPacket {
     protected boolean read(PacketSerializer serializer) {
         super.read(serializer);
 
-        requestIdentifier = serializer.readVarInt();
+        if (version >= 2) {
+            requestIdentifier = serializer.readVarInt();
+        }
 
         int size = serializer.readVarInt();
         if (size > MAX_IDENTIFIERS) {
