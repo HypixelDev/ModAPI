@@ -17,7 +17,8 @@ import net.hypixel.modapi.packet.impl.serverbound.ServerboundRegisterPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
 import org.jetbrains.annotations.ApiStatus;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Predicate;
@@ -31,14 +32,14 @@ public class HypixelModAPI {
 
     private final PacketRegistry registry = new PacketRegistry();
     private final Map<String, Collection<RegisteredHandlerImpl<?>>> handlers = new ConcurrentHashMap<>();
-    private final Set<String> subscribedEvents = ConcurrentHashMap.newKeySet();
-    private Set<String> lastSubscribedEvents = Collections.emptySet();
+    private final EventSubscriptionHandler eventSubscriptionHandler = new EventSubscriptionHandler(this);
+
     private Predicate<HypixelPacket> packetSender = null;
 
     private HypixelModAPI() {
         registerHypixelPackets();
         registerEventPackets();
-        registerDefaultHandler();
+        registerDefaultHandlers();
     }
 
     private void registerHypixelPackets() {
@@ -62,6 +63,7 @@ public class HypixelModAPI {
                 .register();
 
         registry.define("hypixel:register")
+                .clientbound(ClientboundRegisterPacket.class, ClientboundRegisterPacket::new)
                 .serverbound(ServerboundRegisterPacket.class, ServerboundRegisterPacket::new)
                 .register();
     }
@@ -72,24 +74,13 @@ public class HypixelModAPI {
                 .register();
     }
 
-    private void registerDefaultHandler() {
-        createHandler(ClientboundHelloPacket.class, p -> sendRegisterPacket(true));
+    private void registerDefaultHandlers() {
+        createHandler(ClientboundRegisterPacket.class, eventSubscriptionHandler).onError(eventSubscriptionHandler);
+        createHandler(ClientboundHelloPacket.class, p -> eventSubscriptionHandler.sendRegisterPacket(true));
     }
 
-    private void sendRegisterPacket(boolean alwaysSendIfNotEmpty) {
-        if (packetSender == null) {
-            // Allow registering events before the mod has fully initialized
-            return;
-        }
-
-        if (lastSubscribedEvents.equals(subscribedEvents) && !(alwaysSendIfNotEmpty && !subscribedEvents.isEmpty())) {
-            return;
-        }
-
-        Set<String> lastSubscribedEvents = new HashSet<>(subscribedEvents);
-        if (sendPacket(new ServerboundRegisterPacket(registry, lastSubscribedEvents))) {
-            this.lastSubscribedEvents = lastSubscribedEvents;
-        }
+    boolean isPacketSenderSet() {
+        return packetSender != null;
     }
 
     @ApiStatus.Internal
@@ -175,9 +166,7 @@ public class HypixelModAPI {
     }
 
     public void subscribeToEventPacket(Class<? extends EventPacket> packet) {
-        if (subscribedEvents.add(getRegistry().getIdentifier(packet))) {
-            sendRegisterPacket(false);
-        }
+        eventSubscriptionHandler.subscribeToEventPacket(getRegistry().getIdentifier(packet));
     }
 
     /**

@@ -3,6 +3,7 @@ package net.hypixel.modapi.packet;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.hypixel.modapi.HypixelModAPI;
+import net.hypixel.modapi.packet.impl.serverbound.ServerboundRegisterPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -39,6 +40,8 @@ public class TestPacketRoundtrip {
         return HypixelModAPI.getInstance().getRegistry().getRegistrations().stream()
                 .filter(registration -> registration.getServerboundClazz() != null)
                 .filter(registration -> registration.getClientboundClazz() != null)
+                // Exclude register packet as it's not a normal packet and doesn't have an empty constructor
+                .filter(registration -> !registration.getServerboundClazz().equals(ServerboundRegisterPacket.class))
                 .map(Arguments::of);
     }
 
