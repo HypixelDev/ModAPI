@@ -17,6 +17,8 @@ If there is significant demand, support for additional versions and loaders may 
 
 ## Developer Usage
 
+It is recommended to read over the [FAQ](https://github.com/HypixelDev/ModAPI/wiki/FAQ) on the GitHub Wiki before implementing the Mod API.
+
 For using the Mod API you will need to add it as a dependency to your project. This can be done via the public
 Hypixel Maven repository.
 
