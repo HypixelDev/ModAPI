@@ -16,11 +16,11 @@ import net.hypixel.modapi.packet.impl.serverbound.ServerboundPlayerInfoPacket;
 import net.hypixel.modapi.packet.impl.serverbound.ServerboundRegisterPacket;
 import net.hypixel.modapi.serializer.PacketSerializer;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Predicate;
 
 public class HypixelModAPI {
     private static final HypixelModAPI INSTANCE = new HypixelModAPI();
@@ -33,7 +33,8 @@ public class HypixelModAPI {
     private final Map<String, Collection<RegisteredHandlerImpl<?>>> handlers = new ConcurrentHashMap<>();
     private final Set<String> subscribedEvents = ConcurrentHashMap.newKeySet();
     private Set<String> lastSubscribedEvents = Collections.emptySet();
-    private Predicate<HypixelPacket> packetSender = null;
+    @Nullable
+    private HypixelModImplementation modImplementation;
 
     private HypixelModAPI() {
         registerHypixelPackets();
@@ -77,8 +78,8 @@ public class HypixelModAPI {
     }
 
     private void sendRegisterPacket(boolean alwaysSendIfNotEmpty) {
-        if (packetSender == null) {
-            // Allow registering events before the mod has fully initialized
+        if (modImplementation == null || !modImplementation.isConnectedToHypixel()) {
+            // Allow registering events when not connected to Hypixel
             return;
         }
 
@@ -144,11 +145,8 @@ public class HypixelModAPI {
     }
 
     @ApiStatus.Internal
-    public void setPacketSender(Predicate<HypixelPacket> packetSender) {
-        if (this.packetSender != null) {
-            throw new IllegalArgumentException("Packet sender already set");
-        }
-        this.packetSender = packetSender;
+    public void setModImplementation(HypixelModImplementation modImplementation) {
+        this.modImplementation = modImplementation;
     }
 
     /**
@@ -184,11 +182,11 @@ public class HypixelModAPI {
      * @return whether the packet was sent successfully
      */
     public boolean sendPacket(HypixelPacket packet) {
-        if (packetSender == null) {
-            throw new IllegalStateException("Packet sender not set");
+        if (modImplementation == null) {
+            throw new IllegalStateException("Mod implementation not set");
         }
 
-        return packetSender.test(packet);
+        return modImplementation.sendPacket(packet);
     }
 
     private static class RegisteredHandlerImpl<T extends ClientboundHypixelPacket> implements RegisteredHandler<T> {
