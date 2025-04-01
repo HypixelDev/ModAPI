@@ -34,7 +34,7 @@ public class HypixelModAPI {
     private final Set<String> subscribedEvents = ConcurrentHashMap.newKeySet();
     private Set<String> lastSubscribedEvents = Collections.emptySet();
     @Nullable
-    private HypixelModImplementation modImplementation;
+    private HypixelModAPIImplementation modImplementation;
 
     private HypixelModAPI() {
         registerHypixelPackets();
@@ -145,7 +145,7 @@ public class HypixelModAPI {
     }
 
     @ApiStatus.Internal
-    public void setModImplementation(HypixelModImplementation modImplementation) {
+    public void setModImplementation(HypixelModAPIImplementation modImplementation) {
         this.modImplementation = modImplementation;
     }
 
