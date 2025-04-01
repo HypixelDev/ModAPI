@@ -6,6 +6,8 @@ import org.jetbrains.annotations.ApiStatus;
 @ApiStatus.Internal
 public interface HypixelModAPIImplementation {
 
+    void onInit();
+
     boolean sendPacket(HypixelPacket packet);
 
     boolean isConnectedToHypixel();

@@ -39,7 +39,6 @@ public class HypixelModAPI {
     private HypixelModAPI() {
         registerHypixelPackets();
         registerEventPackets();
-        registerDefaultHandler();
     }
 
     private void registerHypixelPackets() {
@@ -146,7 +145,17 @@ public class HypixelModAPI {
 
     @ApiStatus.Internal
     public void setModImplementation(HypixelModAPIImplementation modImplementation) {
+        if (this.modImplementation != null) {
+            throw new IllegalStateException("Mod implementation already set");
+        }
+
+        if (modImplementation == null) {
+            throw new NullPointerException("modImplementation cannot be null");
+        }
+
         this.modImplementation = modImplementation;
+        this.modImplementation.onInit();
+        registerDefaultHandler();
     }
 
     /**
