@@ -38,9 +38,9 @@ public class ClientboundPlayerInfoPacket extends ClientboundVersionedPacket {
             return false;
         }
 
-        this.playerRank = PlayerRank.getById(serializer.readVarInt()).orElseThrow(() -> new IllegalArgumentException("Invalid player rank ID"));
-        this.packageRank = PackageRank.getById(serializer.readVarInt()).orElseThrow(() -> new IllegalArgumentException("Invalid package rank ID"));
-        this.monthlyPackageRank = MonthlyPackageRank.getById(serializer.readVarInt()).orElseThrow(() -> new IllegalArgumentException("Invalid monthly package rank ID"));
+        this.playerRank = PlayerRank.getById(serializer.readVarInt()).orElse(PlayerRank.NORMAL);
+        this.packageRank = PackageRank.getById(serializer.readVarInt()).orElse(PackageRank.NONE);
+        this.monthlyPackageRank = MonthlyPackageRank.getById(serializer.readVarInt()).orElse(MonthlyPackageRank.NONE);
         this.prefix = serializer.readOptionally(PacketSerializer::readString);
         return true;
     }
