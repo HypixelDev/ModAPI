@@ -60,7 +60,7 @@ class EventSubscriptionHandler implements ClientboundPacketHandler<ClientboundRe
     }
 
     void sendRegisterPacket(boolean alwaysSendIfNotEmpty) {
-        if (!api.isPacketSenderSet()) {
+        if (!api.isImplementationSet()) {
             // Allow registering events before the mod has fully initialized
             return;
         }

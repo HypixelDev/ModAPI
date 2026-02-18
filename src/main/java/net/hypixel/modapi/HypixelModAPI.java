@@ -39,7 +39,6 @@ public class HypixelModAPI {
     private HypixelModAPI() {
         registerHypixelPackets();
         registerEventPackets();
-        registerDefaultHandlers();
     }
 
     private void registerHypixelPackets() {
@@ -79,14 +78,8 @@ public class HypixelModAPI {
         createHandler(ClientboundHelloPacket.class, p -> eventSubscriptionHandler.sendRegisterPacket(true));
     }
 
-    private void sendRegisterPacket(boolean alwaysSendIfNotEmpty) {
-        if (modImplementation == null || !modImplementation.isConnectedToHypixel()) {
-            // Allow registering events when not connected to Hypixel
-            return;
-        }
-
-    boolean isPacketSenderSet() {
-        return packetSender != null;
+    boolean isImplementationSet() {
+        return modImplementation != null;
     }
 
     @ApiStatus.Internal
@@ -152,7 +145,7 @@ public class HypixelModAPI {
 
         this.modImplementation = modImplementation;
         this.modImplementation.onInit();
-        registerDefaultHandler();
+        registerDefaultHandlers();
     }
 
     /**
