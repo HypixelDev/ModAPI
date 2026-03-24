@@ -13,6 +13,19 @@ public class UnknownErrorReason implements ErrorReason {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UnknownErrorReason that = (UnknownErrorReason) o;
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
+
+    @Override
     public String toString() {
         return "UnknownErrorReason{" +
                 "id=" + id +
