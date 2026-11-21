@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Notifys the remote server what versions of event packets we want to receive.
+ * Notifies the remote server what versions of event packets we want to receive.
  * <p>
  * You should not use this packet manually, instead, use {@link net.hypixel.modapi.HypixelModAPI#subscribeToEventPacket(Class)} to subscribe to event packets.
  */
@@ -27,7 +27,7 @@ public class ServerboundRegisterPacket extends ServerboundVersionedPacket {
         this.subscribedEvents = registry.getEventVersions(subscribedEventIdentifiers);
 
         if (subscribedEvents.size() > MAX_IDENTIFIERS) {
-            throw new IllegalArgumentException("wantedPackets cannot contain more than " + MAX_IDENTIFIERS + " identifiers");
+            throw new IllegalArgumentException("subscribedEvents cannot contain more than " + MAX_IDENTIFIERS + " identifiers");
         }
     }
 
@@ -41,7 +41,7 @@ public class ServerboundRegisterPacket extends ServerboundVersionedPacket {
 
         int size = serializer.readVarInt();
         if (size > MAX_IDENTIFIERS) {
-            throw new IllegalArgumentException("wantedPackets cannot contain more than " + MAX_IDENTIFIERS + " identifiers");
+            throw new IllegalArgumentException("subscribedEvents cannot contain more than " + MAX_IDENTIFIERS + " identifiers");
         }
 
         this.subscribedEvents = new HashMap<>(size);
@@ -70,7 +70,7 @@ public class ServerboundRegisterPacket extends ServerboundVersionedPacket {
     @Override
     public String toString() {
         return "ServerboundRegisterPacket{" +
-                "wantedPackets=" + subscribedEvents +
+                "subscribedEvents=" + subscribedEvents +
                 "} " + super.toString();
     }
 }
