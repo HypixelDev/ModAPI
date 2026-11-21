@@ -1,5 +1,6 @@
 package net.hypixel.modapi.packet.impl.clientbound;
 
+import io.netty.handler.codec.DecoderException;
 import net.hypixel.modapi.serializer.PacketSerializer;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -39,7 +40,7 @@ public class ClientboundPartyInfoPacket extends ClientboundVersionedPacket {
             return true;
         }
 
-        int memberCount = serializer.readVarInt();
+        int memberCount = serializer.readCollectionSize(PartyMember.MIN_SERIALIZED_BYTES);
         Map<UUID, PartyMember> memberMap = new HashMap<>(memberCount);
         for (int i = 0; i < memberCount; i++) {
             PartyMember member = new PartyMember(serializer);
@@ -117,6 +118,9 @@ public class ClientboundPartyInfoPacket extends ClientboundVersionedPacket {
     }
 
     public static class PartyMember {
+        // UUID (16 bytes) + role ordinal VarInt (at least 1 byte)
+        static final int MIN_SERIALIZED_BYTES = 17;
+
         private final UUID uuid;
         private final PartyRole role;
 
@@ -129,7 +133,7 @@ public class ClientboundPartyInfoPacket extends ClientboundVersionedPacket {
         @ApiStatus.Internal
         PartyMember(PacketSerializer serializer) {
             this.uuid = serializer.readUuid();
-            this.role = PartyRole.VALUES[serializer.readVarInt()];
+            this.role = PartyRole.getById(serializer.readVarInt());
         }
 
         void write(PacketSerializer serializer) {
@@ -161,5 +165,12 @@ public class ClientboundPartyInfoPacket extends ClientboundVersionedPacket {
         ;
 
         private static final PartyRole[] VALUES = values();
+
+        private static PartyRole getById(int id) {
+            if (id < 0 || id >= VALUES.length) {
+                throw new DecoderException("Unknown party role ID " + id);
+            }
+            return VALUES[id];
+        }
     }
 }

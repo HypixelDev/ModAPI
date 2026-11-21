@@ -64,6 +64,26 @@ public class PacketSerializer {
         return this;
     }
 
+    /**
+     * Reads a collection size and checks it against the bytes left in the buffer, so a malformed or malicious
+     * packet can't make the caller pre-allocate a huge collection.
+     *
+     * @param minBytesPerElement the fewest bytes a single element can be encoded in
+     */
+    public int readCollectionSize(int minBytesPerElement) {
+        int size = this.readVarInt();
+        if (size < 0) {
+            throw new DecoderException("Collection size is less than zero!");
+        }
+
+        int maxSize = this.buf.readableBytes() / minBytesPerElement;
+        if (size > maxSize) {
+            throw new DecoderException("Collection size " + size + " is larger than the remaining bytes allow (max " + maxSize + ")");
+        }
+
+        return size;
+    }
+
     public long readLong() {
         return this.buf.readLong();
     }
